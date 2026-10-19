@@ -452,7 +452,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
   if(modelLoaded&&realHeartRoot){
    realHeartRoot.updateMatrixWorld(true);
    Object.entries(labelEls).forEach(([id,el])=>{
-    const obj=realHeartRoot.children.find(o=>o.userData.anatomyLabelId===id);
+    const obj=realHeartRoot.children.find(o=>o.userData.anatomyLabelId===id||o.userData.partId===id);
     if(!obj){el.style.display='none';return}
     const box=new THREE.Box3().setFromObject(obj),v=box.getCenter(new THREE.Vector3());v.y+=Math.max(.07,(box.max.y-box.min.y)*.12);v.project(camera);
     const x=(v.x*.5+.5)*w,y=(-v.y*.5+.5)*h,onScreen=v.z>-1&&v.z<1&&x>0&&x<w&&y>0&&y<h;
@@ -580,8 +580,9 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
      const key=String(o.name||'').toLowerCase().replace(/[^a-z0-9-]/g,'-');
      const label=modelPartNames[key];if(!label)return;
      o.userData.anatomyLabelId=key;
-     const el=document.createElement('div');el.className='heartPartLabel';el.textContent=label;modelLabels.appendChild(el);labelEls[key]=el;
      o.userData.partId=idMap[key]||'';
+     const part=partData.find(p=>p.id===o.userData.partId);
+     const el=document.createElement('div');el.className='heartPartLabel';el.textContent=part?part.name:label;modelLabels.appendChild(el);labelEls[key]=el;
      if(o.userData.partId){(partObjects[o.userData.partId]||(partObjects[o.userData.partId]=[])).push(o);hitTargets.push(o)}
     });
     $('heartModelCredit').textContent='BodyParts3D-derived model · CC BY 4.0';$('heartViewStatus').textContent='Model ready · drag, zoom, select';$('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',300);showRoute(activeRoute);selectPart(selected,false,false);if(exploded)setExploded(true);if(conductionVisible)setConduction(true);
