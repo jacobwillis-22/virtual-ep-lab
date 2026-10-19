@@ -474,7 +474,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
      const dir=origin.clone();
      if(dir.lengthSq()<.01)dir.set((i%2?1:-1),i%3===0?1:-.5,(i%4?1:-1));
      dir.normalize();
-     o.position.copy(origin).addScaledVector(dir,.34+(i%4)*.09);
+     o.position.copy(origin).addScaledVector(dir,.85+(i%4)*.18);
     });
     $('heartViewStatus').textContent='Exploded anatomy · schematic parts separated';
    }else{
@@ -483,6 +483,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
    }
    showRoute(activeRoute);
    if(conductionVisible)setConduction(true);
+   if(show){camera.position.add(new THREE.Vector3(0,0,1.0));controls.update()}
    selectPart(selected);
   }else if(fallbackRoot){
    fallbackRoot.children.forEach((o,i)=>{
