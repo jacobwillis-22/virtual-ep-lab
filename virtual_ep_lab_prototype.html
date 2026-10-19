@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4f7fb">
+<title>Virtual EP Lab — Learn the Signals</title>
+<style>
+:root{color-scheme:light;--ink:#17243b;--muted:#65748b;--blue:#1677ff;--blue2:#63b3ff;--line:rgba(35,70,120,.12);--glass:rgba(255,255,255,.72);--shadow:0 18px 50px rgba(32,65,112,.10)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(ellipse at 8% 0%,#dcecff 0,transparent 35%),radial-gradient(ellipse at 100% 8%,#e4f6ff 0,transparent 32%),linear-gradient(145deg,#f7f9fd,#edf3fa 60%,#f8fbff);min-height:100vh}
+button,select{font:inherit}button{cursor:pointer}.shell{max-width:1200px;margin:auto;padding:24px}.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 4px 26px}.brand{display:flex;align-items:center;gap:12px;font-weight:750;letter-spacing:-.03em}.brandmark{width:40px;height:40px;border-radius:14px;background:linear-gradient(145deg,#087bff,#76c5ff);display:grid;place-items:center;color:white;box-shadow:0 8px 20px #3d9aff55}.brandmark svg{width:24px}.navtag{font-size:12px;color:#35628f;background:#ffffff9c;border:1px solid var(--line);padding:9px 13px;border-radius:999px;backdrop-filter:blur(16px)}
+.hero{position:relative;overflow:hidden;border:1px solid #ffffffb8;border-radius:32px;padding:clamp(26px,5vw,58px);background:linear-gradient(120deg,#ffffffc9,#eef7ffad);box-shadow:var(--shadow);backdrop-filter:blur(22px);display:grid;grid-template-columns:1.2fr .8fr;gap:26px;align-items:center}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:800;color:#1677d2}.hero h1{font-size:clamp(36px,5.5vw,66px);line-height:1.02;letter-spacing:-.06em;margin:14px 0 18px;max-width:660px}.hero h1 span{color:#1677ff}.hero p{color:#586b85;font-size:16px;line-height:1.7;max-width:620px;margin:0}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.primary,.secondary{border:0;border-radius:999px;padding:13px 19px;font-weight:700;transition:transform .18s,box-shadow .18s}.primary{color:#fff;background:linear-gradient(110deg,#0878ff,#48a8ff);box-shadow:0 8px 22px #248dff45}.secondary{color:#2c527b;background:#ffffffc9;border:1px solid var(--line)}.primary:hover,.secondary:hover{transform:translateY(-2px)}.hero-art{min-height:250px;display:grid;place-items:center;position:relative}.orb{width:min(100%,330px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 32% 25%,#ffffff,#d7ecff 32%,#8ec8ff 62%,#4c93ed 100%);box-shadow:inset -20px -28px 60px #2b72bf42,0 24px 70px #63aaff38;position:relative;display:grid;place-items:center}.orb:before,.orb:after{content:"";position:absolute;border:1px solid #fff9;border-radius:50%;inset:13%;transform:rotate(-28deg) scaleX(.62)}.orb:after{transform:rotate(45deg) scaleX(.62)}.heartline{width:78%;height:78%;position:absolute;filter:drop-shadow(0 4px 7px #0d76ed30)}.floating-label{position:absolute;right:0;bottom:15%;padding:12px 15px;background:#ffffffc9;border:1px solid #ffffff;border-radius:18px;box-shadow:0 12px 28px #2d5d9220;backdrop-filter:blur(18px);font-size:12px;color:#42617f}.floating-label strong{display:block;color:#17243b;font-size:14px;margin-bottom:3px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin:38px 4px 16px}.section-head h2{font-size:25px;letter-spacing:-.04em;margin:0 0 5px}.section-head p{color:var(--muted);margin:0;font-size:14px}.grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.85fr);gap:18px}.panel{border:1px solid #ffffffc9;border-radius:26px;background:var(--glass);box-shadow:0 12px 34px #2a56840d;backdrop-filter:blur(22px);padding:22px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}.panel h3{margin:0;font-size:17px;letter-spacing:-.025em}.small-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#74859c;font-weight:800}.select{max-width:100%;border:1px solid var(--line);background:#ffffffc9;color:#2d4562;border-radius:12px;padding:10px 12px;outline-color:#65aaff}.wave-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.chip{font-size:11px;padding:6px 9px;border-radius:999px;background:#e8f3ff;color:#2865a4;font-weight:700}.wavebox{position:relative;border:1px solid #cde4f7;border-radius:18px;background:linear-gradient(#f8fcff,#f2f9ff);overflow:hidden;padding:8px}.wavebox svg{display:block;width:100%;height:auto;min-height:160px}.wave-legend{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#7a8ca2;margin-top:10px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#00a78b;margin-right:6px}.case-prompt{color:#556a84;line-height:1.6;font-size:14px;margin:12px 0 16px}.answers{display:grid;gap:9px}.answer{width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;background:#ffffffad;padding:12px 14px;color:#243c5c;display:flex;gap:10px;align-items:center;transition:background .15s,border .15s}.answer:hover:not(:disabled){border-color:#8fc3ff;background:#f2f8ff}.answer .letter{display:grid;place-items:center;width:26px;height:26px;flex:0 0 26px;border-radius:9px;background:#edf4fb;font-size:12px;font-weight:800}.answer.correct{border-color:#6ac6aa;background:#eafaf4}.answer.wrong{border-color:#ffb5ae;background:#fff0ee}.answer:disabled{cursor:default}.feedback{display:none;margin-top:14px;border-radius:15px;padding:14px;background:#edf6ff;border:1px solid #d4eaff;color:#345777;font-size:13px;line-height:1.6}.feedback.show{display:block}.feedback strong{display:block;color:#193d63;margin-bottom:4px}.side-stack{display:grid;gap:18px;align-content:start}.progress-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.score{font-size:28px;font-weight:800;letter-spacing:-.05em}.progressbar{height:7px;background:#e5edf6;border-radius:99px;overflow:hidden;margin:13px 0}.progressbar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#1482ff,#69c8ff);border-radius:99px;transition:width .3s}.statrow{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:7px 0}.lesson{display:flex;gap:12px;align-items:flex-start;margin-top:15px}.lesson-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:#e6f2ff;color:#1677ff;flex-shrink:0}.lesson strong{font-size:13px;display:block;margin:2px 0 4px}.lesson p{font-size:12px;line-height:1.5;color:var(--muted);margin:0}.notice{margin-top:24px;padding:15px 18px;border-radius:18px;background:#fff8e9;border:1px solid #f5e4bc;color:#795c20;font-size:12px;line-height:1.65;display:flex;gap:11px}.notice strong{color:#604713}.footer{padding:26px 4px 12px;color:#8492a5;font-size:11px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+@media(max-width:820px){.hero{grid-template-columns:1fr}.hero-art{min-height:210px}.orb{width:220px}.floating-label{right:4%;bottom:8%}.grid{grid-template-columns:1fr}.side-stack{grid-template-columns:1fr 1fr}.shell{padding:16px}.nav{padding-bottom:18px}}
+@media(max-width:560px){.side-stack{grid-template-columns:1fr}.panel{padding:17px}.hero{border-radius:24px}.hero-art{min-height:180px}.orb{width:180px}.floating-label{right:0;bottom:3%}.section-head{align-items:start;flex-direction:column}.navtag{font-size:10px}.hero h1{font-size:42px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="nav" aria-label="Main navigation">
+    <div class="brand"><div class="brandmark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M2 12h4l2.2-6 4.1 12 2.5-7H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Virtual EP Lab</span></div>
+    <div class="navtag">EDUCATIONAL SIMULATION · PREVIEW</div>
+  </nav>
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Cardiac electrophysiology learning</div>
+      <h1>Understand the signals.<br><span>Build your confidence.</span></h1>
+      <p>Explore simulated heart rhythms, learn what the waveforms represent, and practice with fictional cases in a calm, interactive learning space.</p>
+      <div class="actions"><button class="primary" id="startBtn">Start a practice case <span aria-hidden="true">↗</span></button><button class="secondary" id="lessonBtn">Explore the basics</button></div>
+    </div>
+    <div class="hero-art" aria-label="Abstract illustration representing heart electrical signals">
+      <div class="orb">
+        <svg class="heartline" viewBox="0 0 300 300" fill="none" aria-hidden="true">
+          <path d="M150 245 C124 220 54 167 57 112 C59 63 117 51 150 91 C183 51 241 63 243 112 C246 167 176 220 150 245Z" fill="#f7fbff" fill-opacity=".55" stroke="#287bd0" stroke-opacity=".5" stroke-width="2"/>
+          <path d="M150 90 L150 132 L125 150 L150 169 L150 210 M150 132 L181 151 L166 176" stroke="#087bff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="150" cy="90" r="9" fill="#0aa995" stroke="#fff" stroke-width="3"/><circle cx="150" cy="132" r="7" fill="#1683ff" stroke="#fff" stroke-width="3"/><circle cx="125" cy="150" r="7" fill="#1683ff" stroke="#fff" stroke-width="3"/><circle cx="150" cy="169" r="7" fill="#1683ff" stroke="#fff" stroke-width="3"/><circle cx="181" cy="151" r="7" fill="#0aa995" stroke="#fff" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="floating-label"><strong>Signal lab</strong>Fictional practice data</div>
+    </div>
+  </header>
+
+  <div class="section-head" id="lab">
+    <div><h2>Your first signal lab</h2><p>Choose a sample rhythm, review the trace, then answer the practice question.</p></div>
+  </div>
+  <main class="grid">
+    <section class="panel" aria-labelledby="signalTitle">
+      <div class="panel-head"><h3 id="signalTitle">Simulated rhythm viewer</h3><select class="select" id="rhythmSelect" aria-label="Choose simulated rhythm"><option value="sinus">Regular rhythm example</option><option value="fast">Fast regular rhythm example</option><option value="af">Irregular rhythm example</option></select></div>
+      <div class="wave-meta"><span class="chip" id="rhythmChip">REGULAR · ILLUSTRATIVE</span><span class="chip">NOT PATIENT DATA</span></div>
+      <div class="wavebox">
+        <svg id="waveSvg" viewBox="0 0 720 240" role="img" aria-label="Illustrative simulated ECG waveform. Not for diagnosis.">
+          <defs><pattern id="smallGrid" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M 12 0 L 0 0 0 12" fill="none" stroke="#dcebf6" stroke-width="1"/></pattern><pattern id="bigGrid" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="url(#smallGrid)"/><path d="M 60 0 L 0 0 0 60" fill="none" stroke="#c7deef" stroke-width="1.2"/></pattern></defs>
+          <rect width="720" height="240" fill="url(#bigGrid)"/><path id="wavePath" d="" fill="none" stroke="#078d83" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="wave-legend"><span><i class="dot"></i>Illustrative electrical trace</span><span>Time and amplitude are schematic</span></div>
+      <p class="case-prompt" id="casePrompt">Look at the spacing between the large repeating peaks. In this simplified example, the rhythm is regular.</p>
+    </section>
+
+    <div class="side-stack">
+      <section class="panel" id="casePanel" aria-labelledby="caseTitle">
+        <div class="panel-head"><h3 id="caseTitle">Practice case 01</h3><span class="small-label">BEGINNER</span></div>
+        <p class="case-prompt" id="questionText">In this illustrative trace, what best describes the spacing between the main repeating peaks?</p>
+        <div class="answers" id="answers">
+          <button class="answer" data-answer="regular"><span class="letter">A</span><span>The peaks are spaced at fairly even intervals.</span></button>
+          <button class="answer" data-answer="irregular"><span class="letter">B</span><span>The intervals vary unpredictably.</span></button>
+          <button class="answer" data-answer="none"><span class="letter">C</span><span>There are no repeating peaks at all.</span></button>
+        </div>
+        <div class="feedback" id="feedback" role="status" aria-live="polite"><strong id="feedbackTitle"></strong><span id="feedbackText"></span></div>
+      </section>
+      <section class="panel">
+        <div class="progress-top"><div><div class="small-label">Practice progress</div><div class="score"><span id="score">0</span><span style="font-size:15px;color:#8795a8;font-weight:600"> / 3</span></div></div><div class="lesson-icon" aria-hidden="true">✦</div></div>
+        <div class="progressbar"><span id="progressFill"></span></div>
+        <div class="statrow"><span>Cases answered</span><strong id="answered">0 of 3</strong></div>
+        <div class="statrow"><span>Correct on first try</span><strong id="accuracy">—</strong></div>
+        <button class="secondary" style="width:100%;margin-top:12px" id="resetBtn">Reset practice</button>
+      </section>
+    </div>
+  </main>
+
+  <div class="section-head" id="basics"><div><h2>Quick learning notes</h2><p>A few concepts to help you read the simulated trace.</p></div></div>
+  <section class="panel">
+    <div class="lesson"><div class="lesson-icon">01</div><div><strong>Rhythm</strong><p>Rhythm describes the pattern and spacing of heartbeats. A trace can look regular or irregular, but rhythm identification requires more than one visual clue.</p></div></div>
+    <div class="lesson"><div class="lesson-icon">02</div><div><strong>ECG and intracardiac signals are different</strong><p>An ECG records electrical activity from electrodes on the skin. Intracardiac electrograms record signals from electrodes inside the heart during specialized procedures.</p></div></div>
+    <div class="lesson"><div class="lesson-icon">03</div><div><strong>Patterns need context</strong><p>Real rhythm interpretation uses multiple leads, signal timing, symptoms, clinical context and expert judgment. This demo intentionally teaches only a basic visual concept.</p></div></div>
+  </section>
+  <aside class="notice"><span aria-hidden="true">ⓘ</span><div><strong>Educational prototype only.</strong> This site uses fictional, generated waveforms for learning interface interactions. It is not a medical device, does not provide diagnosis or treatment advice, and does not qualify anyone to perform clinical procedures. The content has not yet undergone formal clinical review.</div></aside>
+  <footer class="footer"><span>Virtual EP Lab · Early prototype</span><span>Fictional data only · No patient information collected</span></footer>
+</div>
+<script>
+const rhythmSelect=document.getElementById('rhythmSelect');
+const wavePath=document.getElementById('wavePath');
+const rhythmChip=document.getElementById('rhythmChip');
+const casePrompt=document.getElementById('casePrompt');
+const questionText=document.getElementById('questionText');
+const feedback=document.getElementById('feedback');
+const feedbackTitle=document.getElementById('feedbackTitle');
+const feedbackText=document.getElementById('feedbackText');
+const answerButtons=[...document.querySelectorAll('.answer')];
+const scoreEl=document.getElementById('score');
+const answeredEl=document.getElementById('answered');
+const accuracyEl=document.getElementById('accuracy');
+const progressFill=document.getElementById('progressFill');
+let answered=new Set(), correct=new Set(), firstTryCorrect=new Set(), attempts={};
+const cases={
+ sinus:{label:'REGULAR · ILLUSTRATIVE',answer:'regular',prompt:'Look at the spacing between the large repeating peaks. In this simplified example, the rhythm is regular.',question:'In this illustrative trace, what best describes the spacing between the main repeating peaks?',explain:'The main peaks repeat at fairly even intervals in this generated example. Real rhythm interpretation requires additional features and clinical context.'},
+ fast:{label:'FASTER · ILLUSTRATIVE',answer:'regular',prompt:'This schematic example has peaks closer together than the first trace. Focus on the spacing, not on making a real diagnosis.',question:'Compared with the regular example, what is the most obvious visual change in this schematic trace?',explain:'The repeating peaks are closer together, representing a faster illustrative rate. This is not a real patient tracing, and a visual example alone cannot identify the cause.'},
+ af:{label:'IRREGULAR · ILLUSTRATIVE',answer:'irregular',prompt:'The spacing between the main peaks changes in this schematic example. Observe the intervals across the whole trace.',question:'What best describes the spacing between the main repeating peaks in this example?',explain:'The intervals vary in this generated example. Irregular spacing alone does not establish a specific arrhythmia; real ECG interpretation requires more evidence.'}
+};
+function makeWave(kind){
+ const points=[]; const base=120; const total=720; let x=0; points.push([0,base]);
+ let beats=[];
+ if(kind==='sinus'){for(let b=72;b<700;b+=130)beats.push(b)}
+ else if(kind==='fast'){for(let b=48;b<700;b+=88)beats.push(b)}
+ else {let b=52;while(b<700){beats.push(b);b += [72,116,82,137,65,101][beats.length%6]}}
+ for(x=0;x<=total;x+=2){
+   let y=base+Math.sin(x/24)*1.1;
+   for(const b of beats){
+     const p=x-b;
+     y += -7*Math.exp(-Math.pow((p-16)/7,2));
+     y += 6*Math.exp(-Math.pow((p-28)/5,2));
+     y += -76*Math.exp(-Math.pow((p-37)/3.1,2));
+     y += 24*Math.exp(-Math.pow((p-42)/4.2,2));
+     y += -15*Math.exp(-Math.pow((p-48)/3.2,2));
+     y += -12*Math.exp(-Math.pow((p-69)/12,2));
+   }
+   points.push([x,y]);
+ }
+ wavePath.setAttribute('d',points.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' '));
+}
+function loadRhythm(){
+ const kind=rhythmSelect.value,c=cases[kind];
+ makeWave(kind);rhythmChip.textContent=c.label;casePrompt.textContent=c.prompt;questionText.textContent=c.question;
+ feedback.classList.remove('show');answerButtons.forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong')});
+ attempts[kind]=0;
+}
+function updateProgress(){
+ scoreEl.textContent=correct.size;answeredEl.textContent=answered.size+' of 3';
+ accuracyEl.textContent=answered.size?Math.round((correct.size/answered.size)*100)+'%':'—';
+ progressFill.style.width=(answered.size/3*100)+'%';
+}
+answerButtons.forEach(button=>button.addEventListener('click',()=>{
+ const kind=rhythmSelect.value,c=cases[kind],picked=button.dataset.answer;
+ attempts[kind]=(attempts[kind]||0)+1;
+ const isRight=picked===c.answer;
+ feedback.classList.add('show');
+ answerButtons.forEach(b=>{b.disabled=true;if(b.dataset.answer===c.answer)b.classList.add('correct')});
+ if(isRight){
+   if(!answered.has(kind)){answered.add(kind);correct.add(kind);if(attempts[kind]===1)firstTryCorrect.add(kind)}
+   feedbackTitle.textContent='Nice work — that matches the example.';
+   feedbackText.textContent=c.explain;
+ }else{
+   button.classList.add('wrong');
+   if(!answered.has(kind))answered.add(kind);
+   feedbackTitle.textContent='Not quite — review the pattern.';
+   feedbackText.textContent=c.explain;
+ }
+ updateProgress();
+}));
+rhythmSelect.addEventListener('change',loadRhythm);
+document.getElementById('startBtn').addEventListener('click',()=>{document.getElementById('casePanel').scrollIntoView({behavior:'smooth',block:'center'});});
+document.getElementById('lessonBtn').addEventListener('click',()=>{document.getElementById('basics').scrollIntoView({behavior:'smooth',block:'start'});});
+document.getElementById('resetBtn').addEventListener('click',()=>{answered=new Set();correct=new Set();firstTryCorrect=new Set();attempts={};updateProgress();loadRhythm();document.getElementById('lab').scrollIntoView({behavior:'smooth',block:'start'});});
+makeWave('sinus');updateProgress();
+</script>
+</body>
+</html>
