@@ -444,7 +444,24 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
  function addEllipsoid(parent,name,pos,scale,color,partId,opacity=1){const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,36,28),mat(color,.52));mesh.name=name;mesh.position.set(...pos);mesh.scale.set(...scale);mesh.userData.partId=partId||'';if(opacity<1){mesh.material.transparent=true;mesh.material.opacity=opacity}parent.add(mesh);if(partId){hitTargets.push(mesh);if(!partObjects[partId])partObjects[partId]=[];partObjects[partId].push(mesh)}return mesh}
  function tube(parent,points,color,r=.045,partId=''){const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.Mesh(new THREE.TubeGeometry(curve,48,r,10,false),mat(color,.42));m.userData.partId=partId;parent.add(m);if(partId){hitTargets.push(m);(partObjects[partId]||(partObjects[partId]=[])).push(m)}return m}
  function buildPartLabels(){const layer=$('heartPartLabels');if(!layer)return;layer.innerHTML='';labelEls={};partData.forEach(p=>{const el=document.createElement('div');el.className='heartPartLabel';el.textContent=p.name;layer.appendChild(el);labelEls[p.id]=el})}
- function updatePartLabels(){const layer=$('heartPartLabels');if(!layer||!camera||!renderer)return;const shouldShow=exploded&&!!fallbackRoot&&fallbackRoot.visible!==false&&!modelLoaded;layer.classList.toggle('visible',shouldShow);if(!shouldShow)return;const w=wrap.clientWidth,h=wrap.clientHeight;partData.forEach(p=>{const el=labelEls[p.id];if(!el)return;const v=new THREE.Vector3(p.pos[0],p.pos[1]-p.scale[1]-.09,p.pos[2]);v.project(camera);const x=(v.x*.5+.5)*w,y=(-v.y*.5+.5)*h;const onScreen=v.z>-1&&v.z<1&&x>0&&x<w&&y>0&&y<h;el.style.display=onScreen?'block':'none';el.style.left=x+'px';el.style.top=y+'px'})}
+ function updatePartLabels(){
+  const layer=$('heartPartLabels');if(!layer||!camera||!renderer)return;
+  const shouldShow=exploded&&((modelLoaded&&realHeartRoot&&realHeartRoot.visible)||(fallbackRoot&&fallbackRoot.visible!==false&&!modelLoaded));
+  layer.classList.toggle('visible',!!shouldShow);if(!shouldShow)return;
+  const w=wrap.clientWidth,h=wrap.clientHeight;
+  if(modelLoaded&&realHeartRoot){
+   realHeartRoot.updateMatrixWorld(true);
+   Object.entries(labelEls).forEach(([id,el])=>{
+    const obj=realHeartRoot.children.find(o=>o.userData.anatomyLabelId===id);
+    if(!obj){el.style.display='none';return}
+    const box=new THREE.Box3().setFromObject(obj),v=box.getCenter(new THREE.Vector3());v.y=box.max.y+.055;v.project(camera);
+    const x=(v.x*.5+.5)*w,y=(-v.y*.5+.5)*h,onScreen=v.z>-1&&v.z<1&&x>0&&x<w&&y>0&&y<h;
+    el.style.display=onScreen?'block':'none';el.style.left=x+'px';el.style.top=y+'px';
+   });
+   return;
+  }
+  partData.forEach(p=>{const el=labelEls[p.id];if(!el)return;const v=new THREE.Vector3(p.pos[0],p.pos[1]-p.scale[1]-.09,p.pos[2]);v.project(camera);const x=(v.x*.5+.5)*w,y=(-v.y*.5+.5)*h;const onScreen=v.z>-1&&v.z<1&&x>0&&x<w&&y>0&&y<h;el.style.display=onScreen?'block':'none';el.style.left=x+'px';el.style.top=y+'px'});
+ }
  function createFallback(){heartRoot=new THREE.Group();fallbackRoot=heartRoot;scene.add(heartRoot);
   // Overlapping chamber volumes create a rounded, educational silhouette while the source mesh loads.
   addEllipsoid(heartRoot,'right atrium',[-.48,.2,.12],[.52,.64,.46],'#bb5369','ra');
@@ -474,27 +491,26 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
  function setExploded(show){
   exploded=show;
   const b=$('heartExplode');
-  if(modelLoaded&&realHeartRoot&&fallbackRoot){
-   realHeartRoot.visible=!show;
-   fallbackRoot.visible=show;
-   heartRoot=show?fallbackRoot:realHeartRoot;
-   if(show){
-    fallbackRoot.children.forEach((o,i)=>{
-     if(!o.userData.explodeOrigin)o.userData.explodeOrigin=o.position.clone();
-     const origin=o.userData.explodeOrigin;
-     const dir=origin.clone();
+  if(modelLoaded&&realHeartRoot){
+   heartRoot=realHeartRoot;
+   realHeartRoot.visible=true;
+   const bounds=new THREE.Box3().setFromObject(realHeartRoot);
+   const center=bounds.getCenter(new THREE.Vector3());
+   realHeartRoot.children.forEach((o,i)=>{
+    if(!o.userData.explodeOrigin)o.userData.explodeOrigin=o.position.clone();
+    if(show){
+     const partBounds=new THREE.Box3().setFromObject(o);
+     const partCenter=partBounds.getCenter(new THREE.Vector3());
+     const dir=partCenter.sub(center);
      if(dir.lengthSq()<.01)dir.set((i%2?1:-1),i%3===0?1:-.5,(i%4?1:-1));
      dir.normalize();
-     o.position.copy(origin).addScaledVector(dir,.85+(i%4)*.18);
-    });
-    $('heartViewStatus').textContent='Exploded anatomy · schematic parts separated';
-   }else{
-    fallbackRoot.children.forEach(o=>{if(o.userData.explodeOrigin)o.position.copy(o.userData.explodeOrigin)});
-    $('heartViewStatus').textContent='Model ready · drag, zoom, select';
-   }
+     o.position.copy(o.userData.explodeOrigin).addScaledVector(dir,.34+(i%3)*.09);
+    }else o.position.copy(o.userData.explodeOrigin);
+   });
+   $('heartViewStatus').textContent=show?'Exploded anatomy · individual anatomical meshes separated':'Anatomical model · drag, zoom, select';
    showRoute(activeRoute);
    if(conductionVisible)setConduction(true);
-   if(show){camera.position.add(new THREE.Vector3(0,0,1.0));controls.update()}
+   if(show){camera.position.add(new THREE.Vector3(0,0,.45));controls.update()}
    selectPart(selected,false,false);
   }else if(fallbackRoot){
    fallbackRoot.children.forEach((o,i)=>{
@@ -503,7 +519,8 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
     if(show){const dir=origin.clone();if(dir.lengthSq()<.01)dir.set((i%2?1:-1),i%3===0?1:-.5,(i%4?1:-1));dir.normalize();o.position.copy(origin).addScaledVector(dir,1.0+(i%4)*.2)}
     else o.position.copy(origin);
    });
-   $('heartViewStatus').textContent=show?'Exploded anatomy · schematic parts separated':'Interactive schematic · drag, zoom, select';
+   heartRoot=fallbackRoot;
+   $('heartViewStatus').textContent=show?'Exploded schematic · illustrative parts separated':'Interactive schematic · drag, zoom, select';
   }
   if(b){b.setAttribute('aria-pressed',String(show));b.classList.toggle('primary',show);b.textContent=show?'Restore heart':'Explode parts'}
  }
@@ -538,10 +555,25 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
     // Use the downloaded 3D heart model as requested; anatomy selection markers remain aligned to the model's hit targets.
     if(!gltf.scene)return;
     const model=gltf.scene;const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());const max=Math.max(size.x,size.y,size.z)||1;model.scale.setScalar(2.25/max);model.position.sub(center.multiplyScalar(2.25/max));model.position.y-=.02;
-    model.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.side=THREE.DoubleSide;if(o.material.color&&o.material.color.r+o.material.color.g+o.material.color.b<.18){o.material.color.set('#b94760');o.material.roughness=.58;o.material.metalness=0}o.userData.partId='';o.castShadow=false;o.receiveShadow=false}});
+    const modelPartNames={
+     'right-atrium':'Right atrium','left-atrium':'Left atrium','ventricular-wall':'Ventricular wall',
+     'right-ventricle':'Right ventricular cavity','left-ventricle':'Left ventricular cavity',
+     'ascending-aorta':'Ascending aorta','aortic-arch':'Aortic arch','pulmonary-trunk':'Pulmonary trunk',
+     'superior-vena-cava':'Superior vena cava','left-coronary':'Left coronary artery','right-coronary':'Right coronary artery'
+    };
+    model.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.side=THREE.DoubleSide;if(o.material.color&&o.material.color.r+o.material.color.g+o.material.color.b<.18){o.material.color.set('#b94760');o.material.roughness=.58;o.material.metalness=0}o.castShadow=false;o.receiveShadow=false}});
+    // This source model contains separately named anatomical meshes. Keep their real geometry and label each mesh directly.
     realHeartRoot=model;heartRoot.visible=false;scene.add(model);heartRoot=model;modelLoaded=true;hitTargets=[];partObjects={};
-    // Anatomical hit targets are intentionally transparent overlays; the model itself remains the visual reference.
-    partData.forEach(p=>{const hit=new THREE.Mesh(new THREE.SphereGeometry(1,18,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(...p.pos);hit.scale.set(...p.scale.map(x=>x*1.08));hit.userData.partId=p.id;model.add(hit);hitTargets.push(hit);(partObjects[p.id]||(partObjects[p.id]=[])).push(hit)});
+    const modelLabels=$('heartPartLabels');modelLabels.innerHTML='';labelEls={};
+    const idMap={'right-atrium':'ra','left-atrium':'la','ventricular-wall':'septum','right-ventricle':'rv','left-ventricle':'lv','ascending-aorta':'aorta','aortic-arch':'aorta','pulmonary-trunk':'pulmonary','superior-vena-cava':'svc','left-coronary':'cs','right-coronary':'cs'};
+    model.children.forEach(o=>{
+     const key=String(o.name||'').toLowerCase().replace(/[^a-z0-9-]/g,'-');
+     const label=modelPartNames[key];if(!label)return;
+     o.userData.anatomyLabelId=key;
+     const el=document.createElement('div');el.className='heartPartLabel';el.textContent=label;modelLabels.appendChild(el);labelEls[key]=el;
+     o.userData.partId=idMap[key]||'';
+     if(o.userData.partId){(partObjects[o.userData.partId]||(partObjects[o.userData.partId]=[])).push(o);hitTargets.push(o)}
+    });
     $('heartModelCredit').textContent='BodyParts3D-derived model · CC BY 4.0';$('heartViewStatus').textContent='Model ready · drag, zoom, select';$('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',300);showRoute(activeRoute);selectPart(selected,false,false);if(exploded)setExploded(true);if(conductionVisible)setConduction(true);
   },xhr=>{if(xhr.total>0){$('heartViewStatus').textContent='Loading anatomical model · '+Math.round(xhr.loaded/xhr.total*100)+'%';$('heartCanvasLoading').style.display='flex';$('heartCanvasLoading').style.opacity='1';$('heartCanvasLoading').querySelector('b').textContent='Loading anatomical heart';$('heartCanvasLoading').querySelector('small').textContent=Math.round(xhr.loaded/xhr.total*100)+'% downloaded';}},err=>{console.warn('Heart model unavailable; using schematic model.',err);$('heartViewStatus').textContent='Interactive schematic · drag, zoom, select';$('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',300)});
   controls.addEventListener('start',()=>{$('heartHint').style.opacity='.25'});controls.addEventListener('change',()=>{if(!auto)$('heartViewStatus').textContent=modelLoaded?'Model ready · drag, zoom, select':'Interactive schematic · drag, zoom, select'});
