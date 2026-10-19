@@ -501,10 +501,11 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
     if(show){
      const partBounds=new THREE.Box3().setFromObject(o);
      const partCenter=partBounds.getCenter(new THREE.Vector3());
-     const dir=partCenter.sub(center);
+     const dir=partCenter.clone().sub(center);
      if(dir.lengthSq()<.01)dir.set((i%2?1:-1),i%3===0?1:-.5,(i%4?1:-1));
      dir.normalize();
-     o.position.copy(o.userData.explodeOrigin).addScaledVector(dir,1.15+(i%3)*.25);
+     const xSide=Math.abs(partCenter.x-center.x)<.03?(i%2?1:-1):Math.sign(partCenter.x-center.x);
+     o.position.copy(o.userData.explodeOrigin).add(new THREE.Vector3(xSide*4.5,dir.y*.35,dir.z*.25));
     }else o.position.copy(o.userData.explodeOrigin);
    });
    $('heartViewStatus').textContent=show?'Exploded anatomy · individual anatomical meshes separated':'Anatomical model · drag, zoom, select';
