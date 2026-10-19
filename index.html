@@ -60,7 +60,7 @@ body.dark #termPopup .popupBody h4{color:#9dccff}
 
 /* Interactive 3D heart learning space */
 .heartWorkspace{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.8fr);gap:15px;margin-top:17px;align-items:start}
-.heartViewer{padding:14px!important;overflow:hidden}.heartViewerTop,.heartViewerBottom{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.heartViewerTop{padding:3px 3px 12px}.heartViewerTop strong{display:block;font-size:14px;margin-top:4px}.heartViewActions{display:flex;gap:7px;flex-wrap:wrap}.heartViewerBottom{padding:12px 4px 2px;font-size:10px;color:#71839a}.heartViewerBottom>span{display:inline-flex;align-items:center;gap:6px}.dot{width:7px;height:7px;border-radius:50%;display:inline-block}.dot-blue{background:#2589ff}.dot-orange{background:#ff914d}
+.heartViewer{padding:14px!important;overflow:hidden}.heartViewer:fullscreen{width:100vw;height:100vh;overflow:auto;border-radius:0;background:var(--panel,#fff);padding:18px!important}.heartViewer:fullscreen #heartCanvasWrap{height:calc(100vh - 145px);min-height:300px}.heartViewer:fullscreen .heartViewerBottom{padding-bottom:8px}body.dark .heartViewer:fullscreen{background:#142235}.heartViewerTop,.heartViewerBottom{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.heartViewerTop{padding:3px 3px 12px}.heartViewerTop strong{display:block;font-size:14px;margin-top:4px}.heartViewActions{display:flex;gap:7px;flex-wrap:wrap}.heartViewerBottom{padding:12px 4px 2px;font-size:10px;color:#71839a}.heartViewerBottom>span{display:inline-flex;align-items:center;gap:6px}.dot{width:7px;height:7px;border-radius:50%;display:inline-block}.dot-blue{background:#2589ff}.dot-orange{background:#ff914d}
 #heartCanvasWrap{position:relative;height:clamp(350px,52vw,590px);min-height:330px;border:1px solid #d8e7f7;border-radius:19px;overflow:hidden;background:radial-gradient(ellipse at 50% 44%,#ffffff 0%,#edf6ff 48%,#dceafa 100%);touch-action:none;outline-offset:4px}
 #heartCanvas{display:block;width:100%;height:100%;outline:none;cursor:grab}#heartCanvas:active{cursor:grabbing}
 #heartCanvasLoading{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#42617f;font-size:13px;background:linear-gradient(135deg,#f5faffdd,#e8f3ffdd);transition:opacity .25s}
@@ -103,8 +103,8 @@ body.dark #heartCanvasWrap{background:radial-gradient(ellipse at 50% 44%,#263b53
 <section class="page" id="page-heart">
 <header class="pageHero"><div class="eyebrow">Interactive anatomy · learning model</div><h1>Explore the <span>3D heart.</span></h1><p class="sub">Rotate the heart, zoom with your wheel or pinch, and select a structure to learn its name, role, and relationship to cardiac electrical activity. Switch on an illustrative catheter route to see how EP catheters are commonly positioned in a procedure.</p></header>
 <div class="heartWorkspace">
-  <div class="heartViewer panel">
-    <div class="heartViewerTop"><div><div class="eyebrow">3D ANATOMY VIEWER</div><strong id="heartViewStatus">Loading anatomy…</strong></div><div class="heartViewActions"><button class="flashBtn" id="heartReset" type="button">Reset view</button><button class="flashBtn" id="heartAuto" type="button" aria-pressed="false">Auto rotate</button></div></div>
+  <div class="heartViewer panel" id="heartViewer">
+    <div class="heartViewerTop"><div><div class="eyebrow">3D ANATOMY VIEWER</div><strong id="heartViewStatus">Loading anatomy…</strong></div><div class="heartViewActions"><button class="flashBtn" id="heartReset" type="button">Reset view</button><button class="flashBtn" id="heartFullscreen" type="button" aria-label="Enter full screen">⛶ Full screen</button><button class="flashBtn" id="heartAuto" type="button" aria-pressed="false">Auto rotate</button></div></div>
     <div id="heartCanvasWrap" aria-label="Interactive 3D heart. Drag to rotate; scroll or pinch to zoom." tabindex="0"><div id="heartCanvasLoading"><span class="heartLoader"></span><b>Preparing the heart model</b><small>Loading 3D anatomy and controls…</small></div><canvas id="heartCanvas"></canvas><div class="heartHint" id="heartHint">Drag to rotate · Scroll or pinch to zoom · Select a structure</div></div>
     <div class="heartViewerBottom"><span><i class="dot dot-blue"></i> Selected structure</span><span><i class="dot dot-orange"></i> Catheter route</span><span id="heartModelCredit">Anatomical model attribution shown below</span></div>
   </div>
@@ -398,6 +398,7 @@ drag.addEventListener('pointermove',e=>{if(!dragState)return;popup.style.left=Ma
 /* Initialize the interactive case only after every page and control has its handlers. */
 try { render(); } catch (error) { console.error('Signal Lab initialization failed:', error); const q=$('question'); if(q) q.textContent='The signal lab could not initialize. Please refresh the page; if it persists, report this message.'; }
 </script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js';
@@ -471,6 +472,10 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
   scene.add(new THREE.HemisphereLight(0xf3f8ff,0x7d3047,2.15));const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(3,4,5);scene.add(key);const rim=new THREE.DirectionalLight(0x7cbaff,2);rim.position.set(-4,1,-3);scene.add(rim);const fill=new THREE.PointLight(0xff9b9b,.75,10);fill.position.set(0,-2,3);scene.add(fill);
   controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=reduced?0:.075;controls.minDistance=2.1;controls.maxDistance=8;controls.enablePan=false;controls.target.set(0,.05,0);controls.update();
   raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();createFallback();
+  makeAnatomyList();
+  // Show the local schematic immediately. The remote model is an enhancement, never a loading prerequisite.
+  $('heartViewStatus').textContent='Interactive schematic · drag, zoom, select';
+  $('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',250);
   // Load a real, attributed open model; the built-in schematic remains as a resilient fallback.
   const loader=new GLTFLoader();loader.load('https://raw.githubusercontent.com/organui/heart-3d/main/public/models/heart.glb',gltf=>{
     if(!gltf.scene)return;
@@ -484,6 +489,10 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
   controls.addEventListener('start',()=>{$('heartHint').style.opacity='.25'});controls.addEventListener('change',()=>{if(!auto)$('heartViewStatus').textContent=modelLoaded?'Model ready · drag, zoom, select':'Interactive schematic · drag, zoom, select'});
   canvas.addEventListener('pointerup',e=>{if(e.pointerType==='touch'&&e.isPrimary===false)return;const rect=canvas.getBoundingClientRect();mouse.x=((e.clientX-rect.left)/rect.width)*2-1;mouse.y=-((e.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObjects(hitTargets,true);if(hits.length&&hits[0].object.userData.partId){selectPart(hits[0].object.userData.partId);$('heartHint').style.opacity='.25'}});
   $('heartReset').addEventListener('click',()=>{controls.reset();camera.position.set(0,.15,4.7);controls.target.set(0,.05,0);controls.update();$('heartHint').style.opacity='1'});
+  const fsButton=$('heartFullscreen');
+  const updateFsLabel=()=>{const on=!!document.fullscreenElement;fsButton.textContent=on?'⛶ Exit full screen':'⛶ Full screen';fsButton.setAttribute('aria-label',on?'Exit full screen':'Enter full screen');setTimeout(()=>{if(renderer){const w=wrap.clientWidth,h=wrap.clientHeight;if(w&&h){camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}}},120)};
+  fsButton.addEventListener('click',async()=>{try{const target=$('heartViewer');if(!document.fullscreenElement){if(target.requestFullscreen)await target.requestFullscreen();else if(wrap.requestFullscreen)await wrap.requestFullscreen();else $('heartViewStatus').textContent='Full screen is not supported in this browser'}else await document.exitFullscreen()}catch(e){$('heartViewStatus').textContent='Full screen was blocked by the browser; try the browser menu instead'}});
+  document.addEventListener('fullscreenchange',updateFsLabel);
   $('heartAuto').addEventListener('click',e=>{auto=!auto;controls.autoRotate=auto&&!reduced;e.currentTarget.setAttribute('aria-pressed',String(auto));e.currentTarget.classList.toggle('primary',auto);e.currentTarget.textContent=auto?'Stop rotation':'Auto rotate'});
   $('heartLocate').addEventListener('click',()=>focusPart(selected));$('catheterChoices').addEventListener('click',e=>{const b=e.target.closest('[data-route]');if(b)showRoute(b.dataset.route)});
   const resize=()=>{if(!renderer)return;const w=wrap.clientWidth,h=wrap.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
