@@ -451,7 +451,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
   addEllipsoid(heartRoot,'AV / His marker',[-.03,.04,.52],[.1,.1,.1],'#25aaa0','av');
  }
  function routeLine(points,color){const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));const line=new THREE.Mesh(new THREE.TubeGeometry(curve,54,.025,8,false),new THREE.MeshStandardMaterial({color,roughness:.28,metalness:.15,emissive:color,emissiveIntensity:.13}));heartRoot.add(line);routeObjects.push(line);const tip=new THREE.Mesh(new THREE.SphereGeometry(.055,16,12),mat(color,.3));tip.position.copy(curve.getPoint(1));heartRoot.add(tip);routeObjects.push(tip)}
- function showRoute(key){activeRoute=key;routeObjects.forEach(o=>heartRoot&&heartRoot.remove(o));routeObjects=[];const choices=$('catheterChoices');choices.querySelectorAll('[data-route]').forEach(b=>b.classList.toggle('active',b.dataset.route===key));const data=routes[key]||routes.none;$('routeExplain').innerHTML='<b>'+data.title+'</b><p>'+data.text+'</p>';if(key==='none'||!heartRoot)return;
+ function showRoute(key){activeRoute=key;routeObjects.forEach(o=>o.parent?.remove(o));routeObjects=[];const choices=$('catheterChoices');choices.querySelectorAll('[data-route]').forEach(b=>b.classList.toggle('active',b.dataset.route===key));const data=routes[key]||routes.none;$('routeExplain').innerHTML='<b>'+data.title+'</b><p>'+data.text+'</p>';if(key==='none'||!heartRoot)return;
   const start=[-.7,-.55,1.05];
   if(key==='his')routeLine([start,[-.65,-.15,.82],[-.42,.08,.65],[-.08,.08,.58],[-.03,.04,.56]],'#ff9b50');
   if(key==='rv')routeLine([start,[-.64,-.2,.78],[-.45,-.42,.66],[-.33,-.62,.53]],'#e64c73');
