@@ -565,7 +565,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
     // This source model contains separately named anatomical meshes. Keep their real geometry and label each mesh directly.
     realHeartRoot=model;heartRoot.visible=false;scene.add(model);heartRoot=model;modelLoaded=true;hitTargets=[];partObjects={};
     const modelLabels=$('heartPartLabels');modelLabels.innerHTML='';labelEls={};
-    const idMap={'right-atrium':'ra','left-atrium':'la','ventricular-wall':'septum','right-ventricle':'rv','left-ventricle':'lv','ascending-aorta':'aorta','aortic-arch':'aorta','pulmonary-trunk':'pulmonary','superior-vena-cava':'svc','left-coronary':'cs','right-coronary':'cs'};
+    const idMap={'right-atrium':'ra','left-atrium':'la','right-ventricle':'rv','left-ventricle':'lv','ascending-aorta':'aorta','aortic-arch':'aorta','pulmonary-trunk':'pulmonary','superior-vena-cava':'svc'};
     model.children.forEach(o=>{
      const key=String(o.name||'').toLowerCase().replace(/[^a-z0-9-]/g,'-');
      const label=modelPartNames[key];if(!label)return;
