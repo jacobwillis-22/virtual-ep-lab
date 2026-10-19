@@ -504,19 +504,19 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
      const dir=partCenter.clone().sub(center);
      if(dir.lengthSq()<.01)dir.set((i%2?1:-1),i%3===0?1:-.5,(i%4?1:-1));
      dir.normalize();
-     // Move each anatomical mesh away from the shared heart center in 3D.
-     // Keep a slight horizontal emphasis while limiting vertical/depth drift.
-     dir.x *= 1.35;
-     dir.y *= .9;
-     dir.z *= .9;
+     // Give each mesh a much larger independent clearance from the heart center.
+     // This is intentionally a strong separation so large neighboring meshes don't overlap.
+     dir.x *= 1.2;
+     dir.y *= 1.05;
+     dir.z *= 1.05;
      dir.normalize();
-     o.position.copy(o.userData.explodeOrigin).addScaledVector(dir,1.75+(i%3)*.18);
+     o.position.copy(o.userData.explodeOrigin).addScaledVector(dir,3.0+(i%3)*.3);
     }else o.position.copy(o.userData.explodeOrigin);
    });
    $('heartViewStatus').textContent=show?'Exploded anatomy · individual anatomical meshes separated':'Anatomical model · drag, zoom, select';
    showRoute(activeRoute);
    if(conductionVisible)setConduction(true);
-   if(show){camera.position.add(new THREE.Vector3(0,0,1.25));controls.update()}
+   if(show){camera.position.add(new THREE.Vector3(0,0,2.0));controls.update()}
    selectPart(selected,false,false);
   }else if(fallbackRoot){
    fallbackRoot.children.forEach((o,i)=>{
