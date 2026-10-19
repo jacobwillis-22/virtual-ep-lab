@@ -34,6 +34,24 @@ button:active:not(:disabled),.tab:active,.btn:active,.answer:active:not(:disable
 .themeSwitch:hover .switchTrack{box-shadow:0 0 0 4px #1677ff16}
 :focus-visible{outline:3px solid #69adff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){button,.tab,.answer,.btn,.themeSwitch,.featureCard,.priceCard,.termCard{transition:none}button:hover,.tab:hover,.btn:hover,.answer:hover,.featureCard:hover,.priceCard:hover,.termCard:hover{transform:none}}
+/* Clickable medical vocabulary and movable definition popover */
+.medTerm{border-bottom:1px dashed #3986d7;cursor:pointer;text-decoration:none;color:inherit;transition:transform .16s ease,color .16s ease,background .16s ease;border-radius:3px}
+.medTerm:hover{display:inline-block;transform:translateY(-1px) scale(1.025);color:#1677d2;background:#1677ff0d}
+body.dark .medTerm:hover{color:#9dccff;background:#1677ff20}
+#termPopup{position:fixed;z-index:9999;left:calc(50% - 180px);top:18%;width:min(360px,calc(100vw - 24px));max-height:min(70vh,620px);overflow:auto;border:1px solid #c9d9eb;border-radius:18px;background:#f9fcffef;color:#17243b;box-shadow:0 22px 70px #07182e35;backdrop-filter:blur(24px);display:none}
+#termPopup.open{display:block}
+#termPopup .popupHead{position:sticky;top:0;display:flex;align-items:center;gap:10px;justify-content:space-between;padding:12px 14px;background:#edf5ffed;border-bottom:1px solid #d7e5f5;cursor:move;touch-action:none;user-select:none}
+#termPopup .popupHead strong{font-size:13px}
+#termPopup .popupClose{border:0;border-radius:9px;width:30px;height:30px;font-size:19px;line-height:1;background:#dcecff;color:#244a70;cursor:pointer}
+#termPopup .popupBody{padding:15px;font-size:13px;line-height:1.65}
+#termPopup .popupBody h4{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#1677d2;margin:0 0 7px}
+#termPopup .popupBody .popupDefinition{font-size:14px;font-weight:650;margin:0 0 16px}
+#termPopup .popupBreakdown p{margin:0 0 10px}
+body.dark #termPopup{background:#142338f5;border-color:#344b65;color:#e6edf7;box-shadow:0 22px 70px #0008}
+body.dark #termPopup .popupHead{background:#1b3048f5;border-color:#344b65}
+body.dark #termPopup .popupClose{background:#29445f;color:#e6edf7}
+body.dark #termPopup .popupBody h4{color:#9dccff}
+@media(prefers-reduced-motion:reduce){.medTerm{transition:none}.medTerm:hover{transform:none}}
 </style></head><body><div class="shell">
 <nav class="nav"><div class="brand"><div class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" width="30" height="30"><path d="M4 33h12l7-15 10 29 8-20 6 6h11" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Virtual EP Lab</div><div class="navtools"><label class="themeSwitch" for="themeToggle"><span id="themeLabel">Light</span><input id="themeToggle" type="checkbox" role="switch" aria-label="Toggle dark mode"><span class="switchTrack"><span class="switchKnob"></span></span><span>Dark</span></label><span class="pill">SIGNAL ACADEMY · EARLY ACCESS</span></div></nav>
 <nav class="tabs" aria-label="Main navigation"><button class="tab active" data-page="home">Home</button><button class="tab" data-page="lab">Interactive Signal Lab</button><button class="tab" data-page="heart">3D Heart</button><button class="tab" data-page="simulator">Virtual EP Simulator</button><button class="tab" data-page="glossary">Medical Dictionary</button></nav>
@@ -93,6 +111,7 @@ button:active:not(:disabled),.tab:active,.btn:active,.answer:active:not(:disable
 
 <aside class="notice"><b>Educational prototype only.</b> All traces and cases are fictional and generated for interface practice. This is not a medical device, does not provide diagnosis or treatment advice, and does not qualify anyone to perform clinical procedures. Content has not yet undergone formal clinical review. Do not use this prototype to make patient-care decisions.</aside>
 <footer class="footer"><span>Virtual EP Lab · Signal Academy</span><span>Fictional data only · No patient information collected</span></footer></div>
+<aside id="termPopup" role="dialog" aria-modal="false" aria-labelledby="termPopupTitle"><div class="popupHead" id="termPopupDrag"><strong id="termPopupTitle">Medical term</strong><button class="popupClose" id="termPopupClose" aria-label="Close definition">×</button></div><div class="popupBody"><h4>Definition</h4><p class="popupDefinition" id="termPopupDefinition"></p><h4>Break down</h4><div class="popupBreakdown" id="termPopupBreakdown"></div></div></aside>
 <script>
 const C=[
 {title:'Regularity plus morphology',level:'Foundation',topic:'Two observations',kind:'regular',q:'You observe fairly even R–R spacing and a visible P-like bump before each QRS. Which statement stays closest to the evidence in this schematic trace?',o:['The pattern is regular here, and a P-like deflection precedes each QRS.','A specific rhythm diagnosis is confirmed.','The trace proves normal conduction in a real person.','The T wave is causing each QRS.'],a:0,why:['This answer reports two visible observations without claiming a diagnosis.','Even spacing alone cannot confirm a specific diagnosis.','A schematic trace cannot prove normal conduction in a person.','The T wave is not described as causing the QRS.'],hint:['Compare the spacing between the tall peaks.','Now inspect the small rounded deflection just before each peak.']},
@@ -112,13 +131,58 @@ function choose(n,b){let c=C[i],bs=[...document.querySelectorAll('.answer')];bs.
 $('hintBtn').onclick=()=>{let c=C[i];if(hintStage<c.hint.length){$('hintText').hidden=false;$('hintText').textContent='Hint '+(hintStage+1)+': '+c.hint[hintStage];hintStage++;$('hintStatus').textContent=hintStage+' of '+c.hint.length+' hints revealed';$('hintBtn').textContent=hintStage<c.hint.length?'Reveal hint '+(hintStage+1):'All hints revealed'}};
 $('caseSelect').onchange=()=>{i=+$('caseSelect').value;render()};$('next').onclick=()=>{i=(i+1)%C.length;render();$('casePanel').scrollIntoView({behavior:'smooth',block:'center'})};$('retry').onclick=render;$('reset').onclick=()=>{i=0;done=new Set();first=new Set();eventual=new Set();missed=new Set();attempts={};score=0;render()};$('reviewBtn').onclick=()=>{if(!missed.size){$('question').textContent='No missed cases to review yet. Complete a case and try again if needed.';return}i=[...missed][0];render();$('casePanel').scrollIntoView({behavior:'smooth',block:'center'})};$('start').onclick=()=>showPage('lab');if($('how'))$('how').onclick=()=>{showPage('lab');setTimeout(()=>$('explain').scrollIntoView({behavior:'smooth',block:'center'}),80)};
 const themeToggle=$('themeToggle');
-function setTheme(mode){document.body.classList.toggle('dark',mode==='dark');themeToggle.checked=mode==='dark';themeToggle.setAttribute('aria-checked',mode==='dark'?'true':'false');$('themeLabel').textContent=mode==='dark'?'Dark':'Light';document.querySelector('meta[name="theme-color"]').content=mode==='dark'?'#101d2c':'#f4f7fb';try{localStorage.setItem('vep-theme',mode)}catch(e){}}
+function setTheme(mode){document.body.classList.toggle('dark',mode==='dark');themeToggle.checked=mode==='dark';themeToggle.setAttribute('aria-checked',mode==='dark'?'true':'false');$('themeLabel').textContent='Light';document.querySelector('meta[name="theme-color"]').content=mode==='dark'?'#101d2c':'#f4f7fb';try{localStorage.setItem('vep-theme',mode)}catch(e){}}
 let savedTheme='light';try{savedTheme=localStorage.getItem('vep-theme')||'light'}catch(e){}setTheme(savedTheme);
 themeToggle.addEventListener('change',()=>setTheme(themeToggle.checked?'dark':'light'));
 document.querySelectorAll('[data-page]').forEach(el=>el.addEventListener('click',()=>showPage(el.dataset.page)));
 function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));document.querySelectorAll('.tabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.page===name));window.scrollTo({top:0,behavior:'smooth'});}
 $('start').onclick=()=>showPage('lab');$('browsePaths').onclick=()=>{showPage('home');setTimeout(()=>$('pricing').scrollIntoView({behavior:'smooth',block:'start'}),80)};$('pathNotify').onclick=()=>alert('Structured learning paths are planned. Pricing and checkout are not available yet.');$('pathDetails').onclick=()=>{$('curriculum').scrollIntoView({behavior:'smooth',block:'start'})};
 $('termSearch').addEventListener('input',()=>{let q=$('termSearch').value.toLowerCase().trim(),shown=0;document.querySelectorAll('.termCard').forEach(card=>{let match=(card.innerText+' '+card.dataset.terms).toLowerCase().includes(q);card.hidden=!match;if(match)shown++});$('termCount').textContent=shown+' term'+(shown===1?'':'s');$('noTerms').hidden=shown!==0});
+
+const vocabulary=[
+ {key:'atrium',aliases:['atria','atrium']},
+ {key:'ventricle',aliases:['ventricles','ventricular','ventricle']},
+ {key:'ecg',aliases:['electrocardiogram','ECG','EKG']},
+ {key:'p wave',aliases:['P waves','P-wave','P wave']},
+ {key:'qrs complex',aliases:['QRS complexes','QRS complex','QRS']},
+ {key:'t wave',aliases:['T waves','T-wave','T wave']},
+ {key:'depolarization',aliases:['depolarization','depolarize','depolarizing']},
+ {key:'repolarization',aliases:['repolarization','repolarize','repolarizing']},
+ {key:'rhythm regularity',aliases:['rhythm regularity','regularity']},
+ {key:'r–r interval',aliases:['R-R intervals','R–R intervals','R-R interval','R–R interval','RR interval','R-wave peaks']},
+ {key:'intracardiac electrogram',aliases:['intracardiac electrograms','intracardiac electrogram','electrograms','electrogram']},
+ {key:'electrophysiology',aliases:['electrophysiology','EP study','cardiac electrophysiology']}
+];
+const dictionaryTerms={};
+document.querySelectorAll('#glossaryGrid .termCard').forEach(card=>{
+ const title=card.querySelector('h3')?.textContent.trim()||'Medical term';
+ const simple=card.querySelector('.simpleDef')?.textContent.trim()||'';
+ const details=card.querySelector('details');
+ const v=vocabulary.find(x=>x.key===title.toLowerCase()||x.aliases.some(a=>title.toLowerCase()===a.toLowerCase()||title.toLowerCase().startsWith(a.toLowerCase())));
+ const key=v?.key||title.toLowerCase();
+ dictionaryTerms[key]={title,definition:simple,breakdown:details?details.innerHTML:'<p>See the Medical Dictionary for more details.</p>'};
+});
+function openTerm(key){const entry=dictionaryTerms[key];if(!entry)return;$('termPopupTitle').textContent=entry.title;$('termPopupDefinition').textContent=entry.definition;$('termPopupBreakdown').innerHTML=entry.breakdown;$('termPopup').classList.add('open');}
+function closeTerm(){$('termPopup').classList.remove('open')}
+$('termPopupClose').addEventListener('click',closeTerm);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTerm()});
+function makeMedicalTermsClickable(){
+ const root=document.querySelector('.shell');if(!root)return;
+ const aliases=[];vocabulary.forEach(v=>v.aliases.forEach(alias=>aliases.push({alias,key:v.key})));
+ aliases.sort((a,b)=>b.alias.length-a.alias.length);
+ const escapeRegex=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$('termSearch').addEventListener('input',()=>{let q=$('termSearch').value.toLowerCase().trim(),shown=0;document.querySelectorAll('.termCard').forEach(card=>{let match=(card.innerText+' '+card.dataset.terms).toLowerCase().includes(q);card.hidden=!match;if(match)shown++});$('termCount').textContent=shown+' term'+(shown===1?'':'s');$('noTerms').hidden=shown!==0});');
+ const pattern=new RegExp('\\b('+aliases.map(x=>escapeRegex(x.alias)).join('|')+')\\b','gi');
+ const skip=new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','BUTTON','SELECT','OPTION','SVG','PATH','CODE','SUMMARY']);
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;if(!p||skip.has(p.tagName)||p.closest('#page-glossary')||p.closest('#termPopup')||p.closest('button,a,.medTerm,[aria-hidden="true"]'))return NodeFilter.FILTER_REJECT;pattern.lastIndex=0;return pattern.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
+ const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+ nodes.forEach(node=>{pattern.lastIndex=0;const value=node.nodeValue;let last=0,match;const frag=document.createDocumentFragment();while((match=pattern.exec(value))){if(match.index>last)frag.appendChild(document.createTextNode(value.slice(last,match.index)));const found=aliases.find(x=>x.alias.toLowerCase()===match[0].toLowerCase());if(found){const span=document.createElement('span');span.className='medTerm';span.textContent=match[0];span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','Open definition for '+match[0]);span.addEventListener('click',()=>openTerm(found.key));span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTerm(found.key)}});frag.appendChild(span)}else frag.appendChild(document.createTextNode(match[0]));last=pattern.lastIndex;}if(last<value.length)frag.appendChild(document.createTextNode(value.slice(last)));node.parentNode.replaceChild(frag,node);});
+}
+const popup=$('termPopup'),drag=$('termPopupDrag');let dragState=null;
+drag.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=popup.getBoundingClientRect();dragState={x:e.clientX,y:e.clientY,left:r.left,top:r.top};popup.style.left=r.left+'px';popup.style.top=r.top+'px';popup.style.right='auto';drag.setPointerCapture(e.pointerId)});
+drag.addEventListener('pointermove',e=>{if(!dragState)return;popup.style.left=Math.max(8,Math.min(window.innerWidth-popup.offsetWidth-8,dragState.left+e.clientX-dragState.x))+'px';popup.style.top=Math.max(8,Math.min(window.innerHeight-70,dragState.top+e.clientY-dragState.y))+'px'});
+function stopPopupDrag(){dragState=null}drag.addEventListener('pointerup',stopPopupDrag);drag.addEventListener('pointercancel',stopPopupDrag);
+makeMedicalTermsClickable();
+
 /* Initialize the interactive case only after every page and control has its handlers. */
 try { render(); } catch (error) { console.error('Signal Lab initialization failed:', error); const q=$('question'); if(q) q.textContent='The signal lab could not initialize. Please refresh the page; if it persists, report this message.'; }
 </script></body></html>
