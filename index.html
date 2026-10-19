@@ -140,48 +140,23 @@ $('start').onclick=()=>showPage('lab');$('browsePaths').onclick=()=>{showPage('h
 $('termSearch').addEventListener('input',()=>{let q=$('termSearch').value.toLowerCase().trim(),shown=0;document.querySelectorAll('.termCard').forEach(card=>{let match=(card.innerText+' '+card.dataset.terms).toLowerCase().includes(q);card.hidden=!match;if(match)shown++});$('termCount').textContent=shown+' term'+(shown===1?'':'s');$('noTerms').hidden=shown!==0});
 
 const vocabulary=[
- {key:'atrium',aliases:['atria','atrium']},
- {key:'ventricle',aliases:['ventricles','ventricular','ventricle']},
- {key:'ecg',aliases:['electrocardiogram','ECG','EKG']},
- {key:'p wave',aliases:['P waves','P-wave','P wave']},
- {key:'qrs complex',aliases:['QRS complexes','QRS complex','QRS']},
- {key:'t wave',aliases:['T waves','T-wave','T wave']},
- {key:'depolarization',aliases:['depolarization','depolarize','depolarizing']},
- {key:'repolarization',aliases:['repolarization','repolarize','repolarizing']},
- {key:'rhythm regularity',aliases:['rhythm regularity','regularity']},
- {key:'r–r interval',aliases:['R-R intervals','R–R intervals','R-R interval','R–R interval','RR interval','R-wave peaks']},
- {key:'intracardiac electrogram',aliases:['intracardiac electrograms','intracardiac electrogram','electrograms','electrogram']},
- {key:'electrophysiology',aliases:['electrophysiology','EP study','cardiac electrophysiology']}
+ {key:'atrium',aliases:['atria','atrium']},{key:'ventricle',aliases:['ventricles','ventricular','ventricle']},
+ {key:'ecg',aliases:['electrocardiogram','ECG','EKG']},{key:'p wave',aliases:['P waves','P-wave','P wave']},
+ {key:'qrs complex',aliases:['QRS complexes','QRS complex','QRS']},{key:'t wave',aliases:['T waves','T-wave','T wave']},
+ {key:'depolarization',aliases:['depolarization','depolarize','depolarizing']},{key:'repolarization',aliases:['repolarization','repolarize','repolarizing']},
+ {key:'rhythm regularity',aliases:['rhythm regularity','regularity']},{key:'r–r interval',aliases:['R-R intervals','R–R intervals','R-R interval','R–R interval','RR interval','R-wave peaks']},
+ {key:'intracardiac electrogram',aliases:['intracardiac electrograms','intracardiac electrogram','electrograms','electrogram']},{key:'electrophysiology',aliases:['electrophysiology','EP study','cardiac electrophysiology']}
 ];
 const dictionaryTerms={};
-document.querySelectorAll('#glossaryGrid .termCard').forEach(card=>{
- const title=card.querySelector('h3')?.textContent.trim()||'Medical term';
- const simple=card.querySelector('.simpleDef')?.textContent.trim()||'';
- const details=card.querySelector('details');
- const v=vocabulary.find(x=>x.key===title.toLowerCase()||x.aliases.some(a=>title.toLowerCase()===a.toLowerCase()||title.toLowerCase().startsWith(a.toLowerCase())));
- const key=v?.key||title.toLowerCase();
- dictionaryTerms[key]={title,definition:simple,breakdown:details?details.innerHTML:'<p>See the Medical Dictionary for more details.</p>'};
-});
+document.querySelectorAll('#glossaryGrid .termCard').forEach(card=>{const title=card.querySelector('h3')?.textContent.trim()||'Medical term';const simple=card.querySelector('.simpleDef')?.textContent.trim()||'';const details=card.querySelector('details');const v=vocabulary.find(x=>x.key===title.toLowerCase()||x.aliases.some(a=>title.toLowerCase()===a.toLowerCase()||title.toLowerCase().startsWith(a.toLowerCase())));dictionaryTerms[v?.key||title.toLowerCase()]={title,definition:simple,breakdown:details?details.innerHTML:'<p>See the Medical Dictionary for more details.</p>'};});
 function openTerm(key){const entry=dictionaryTerms[key];if(!entry)return;$('termPopupTitle').textContent=entry.title;$('termPopupDefinition').textContent=entry.definition;$('termPopupBreakdown').innerHTML=entry.breakdown;$('termPopup').classList.add('open');}
-function closeTerm(){$('termPopup').classList.remove('open')}
-$('termPopupClose').addEventListener('click',closeTerm);
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTerm()});
-function makeMedicalTermsClickable(){
- const root=document.querySelector('.shell');if(!root)return;
- const aliases=[];vocabulary.forEach(v=>v.aliases.forEach(alias=>aliases.push({alias,key:v.key})));
- aliases.sort((a,b)=>b.alias.length-a.alias.length);
- const escapeRegex=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$('termSearch').addEventListener('input',()=>{let q=$('termSearch').value.toLowerCase().trim(),shown=0;document.querySelectorAll('.termCard').forEach(card=>{let match=(card.innerText+' '+card.dataset.terms).toLowerCase().includes(q);card.hidden=!match;if(match)shown++});$('termCount').textContent=shown+' term'+(shown===1?'':'s');$('noTerms').hidden=shown!==0});');
- const pattern=new RegExp('\\b('+aliases.map(x=>escapeRegex(x.alias)).join('|')+')\\b','gi');
- const skip=new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','BUTTON','SELECT','OPTION','SVG','PATH','CODE','SUMMARY']);
- const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;if(!p||skip.has(p.tagName)||p.closest('#page-glossary')||p.closest('#termPopup')||p.closest('button,a,.medTerm,[aria-hidden="true"]'))return NodeFilter.FILTER_REJECT;pattern.lastIndex=0;return pattern.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
- const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
- nodes.forEach(node=>{pattern.lastIndex=0;const value=node.nodeValue;let last=0,match;const frag=document.createDocumentFragment();while((match=pattern.exec(value))){if(match.index>last)frag.appendChild(document.createTextNode(value.slice(last,match.index)));const found=aliases.find(x=>x.alias.toLowerCase()===match[0].toLowerCase());if(found){const span=document.createElement('span');span.className='medTerm';span.textContent=match[0];span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','Open definition for '+match[0]);span.addEventListener('click',()=>openTerm(found.key));span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTerm(found.key)}});frag.appendChild(span)}else frag.appendChild(document.createTextNode(match[0]));last=pattern.lastIndex;}if(last<value.length)frag.appendChild(document.createTextNode(value.slice(last)));node.parentNode.replaceChild(frag,node);});
-}
-const popup=$('termPopup'),drag=$('termPopupDrag');let dragState=null;
-drag.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=popup.getBoundingClientRect();dragState={x:e.clientX,y:e.clientY,left:r.left,top:r.top};popup.style.left=r.left+'px';popup.style.top=r.top+'px';popup.style.right='auto';drag.setPointerCapture(e.pointerId)});
-drag.addEventListener('pointermove',e=>{if(!dragState)return;popup.style.left=Math.max(8,Math.min(window.innerWidth-popup.offsetWidth-8,dragState.left+e.clientX-dragState.x))+'px';popup.style.top=Math.max(8,Math.min(window.innerHeight-70,dragState.top+e.clientY-dragState.y))+'px'});
-function stopPopupDrag(){dragState=null}drag.addEventListener('pointerup',stopPopupDrag);drag.addEventListener('pointercancel',stopPopupDrag);
-makeMedicalTermsClickable();
+function closeTerm(){$('termPopup').classList.remove('open')}$('termPopupClose').addEventListener('click',closeTerm);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTerm()});
+function makeMedicalTermsClickable(){const root=document.querySelector('.shell');if(!root)return;const aliases=[];vocabulary.forEach(v=>v.aliases.forEach(alias=>aliases.push({alias,key:v.key})));aliases.sort((a,b)=>b.alias.length-a.alias.length);
+const special=String.fromCharCode(36)+'*+?.()|[]{}';const escapeRegex=s=>s.split('').map(c=>special.includes(c)||c==='\\'?'\\'+c:c).join('');const pattern=new RegExp('\\b('+aliases.map(x=>escapeRegex(x.alias)).join('|')+')\\b','gi');
+const skip=new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','BUTTON','SELECT','OPTION','SVG','PATH','CODE','SUMMARY']);const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;if(!p||skip.has(p.tagName)||p.closest('#page-glossary')||p.closest('#termPopup')||p.closest('button,a,.medTerm,[aria-hidden="true"]'))return NodeFilter.FILTER_REJECT;pattern.lastIndex=0;return pattern.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
+const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{pattern.lastIndex=0;const value=node.nodeValue;let last=0,match;const frag=document.createDocumentFragment();while((match=pattern.exec(value))){if(match.index>last)frag.appendChild(document.createTextNode(value.slice(last,match.index)));const found=aliases.find(x=>x.alias.toLowerCase()===match[0].toLowerCase());if(found){const span=document.createElement('span');span.className='medTerm';span.textContent=match[0];span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','Open definition for '+match[0]);span.addEventListener('click',()=>openTerm(found.key));span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTerm(found.key)}});frag.appendChild(span)}else frag.appendChild(document.createTextNode(match[0]));last=pattern.lastIndex;}if(last<value.length)frag.appendChild(document.createTextNode(value.slice(last)));node.parentNode.replaceChild(frag,node);});}
+const popup=$('termPopup'),drag=$('termPopupDrag');let dragState=null;drag.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=popup.getBoundingClientRect();dragState={x:e.clientX,y:e.clientY,left:r.left,top:r.top};popup.style.left=r.left+'px';popup.style.top=r.top+'px';popup.style.right='auto';drag.setPointerCapture(e.pointerId)});
+drag.addEventListener('pointermove',e=>{if(!dragState)return;popup.style.left=Math.max(8,Math.min(window.innerWidth-popup.offsetWidth-8,dragState.left+e.clientX-dragState.x))+'px';popup.style.top=Math.max(8,Math.min(window.innerHeight-70,dragState.top+e.clientY-dragState.y))+'px'});function stopPopupDrag(){dragState=null}drag.addEventListener('pointerup',stopPopupDrag);drag.addEventListener('pointercancel',stopPopupDrag);makeMedicalTermsClickable();
 
 /* Initialize the interactive case only after every page and control has its handlers. */
 try { render(); } catch (error) { console.error('Signal Lab initialization failed:', error); const q=$('question'); if(q) q.textContent='The signal lab could not initialize. Please refresh the page; if it persists, report this message.'; }
