@@ -484,7 +484,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
    showRoute(activeRoute);
    if(conductionVisible)setConduction(true);
    if(show){camera.position.add(new THREE.Vector3(0,0,1.0));controls.update()}
-   selectPart(selected);
+   selectPart(selected,false);
   }else if(fallbackRoot){
    fallbackRoot.children.forEach((o,i)=>{
     if(!o.userData.explodeOrigin)o.userData.explodeOrigin=o.position.clone();
@@ -499,15 +499,15 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
  function setConduction(show){conductionVisible=show;clearGroup(conductionGroup);conductionGroup=null;if(show&&heartRoot){conductionGroup=new THREE.Group();conductionGroup.name='educational-conduction-overlay';const paths=[[[ -.59,.5,.43],[-.48,.35,.47],[-.25,.12,.48],[-.08,.02,.51]], [[-.08,.02,.51],[-.02,-.18,.53],[-.16,-.43,.5],[-.29,-.68,.45]], [[-.08,.02,.51],[.1,-.2,.43],[.25,-.46,.35],[.35,-.7,.3]]];const colors=['#21b8a6','#f2a93b','#ef6b83'];paths.forEach((pts,i)=>{const curve=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)));const line=new THREE.Mesh(new THREE.TubeGeometry(curve,48,.018,8,false),new THREE.MeshBasicMaterial({color:colors[i],transparent:true,opacity:.95,depthTest:false}));line.renderOrder=1000;conductionGroup.add(line);const node=new THREE.Mesh(new THREE.SphereGeometry(.035,14,10),new THREE.MeshBasicMaterial({color:colors[i],depthTest:false}));node.position.set(...pts[0]);node.renderOrder=1001;conductionGroup.add(node)});heartRoot.add(conductionGroup)}const b=$('heartConduction');if(b){b.setAttribute('aria-pressed',String(show));b.classList.toggle('primary',show)}}
  function setCameraView(which){if(!camera||!controls)return;const target=controls.target.clone();let offset;if(which==='front')offset=new THREE.Vector3(0,.05,4.15);else if(which==='side')offset=new THREE.Vector3(4.15,.05,0);else offset=new THREE.Vector3(0,.05,-4.15);camera.position.copy(target).add(offset);camera.lookAt(target);controls.update()}
  function updateSelectionHalo(p){if(!heartRoot||!scene)return;if(selectionHalo){selectionHalo.parent?.remove(selectionHalo);selectionHalo.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose()}});selectionHalo=null}selectionHalo=new THREE.Group();selectionHalo.name='selected-anatomy-marker';const dot=new THREE.Mesh(new THREE.SphereGeometry(.045,16,12),new THREE.MeshBasicMaterial({color:'#111111',depthTest:false,depthWrite:false}));dot.position.set(...p.pos);dot.renderOrder=1000;dot.name='selected-anatomy-dot';selectionHalo.add(dot);heartRoot.add(selectionHalo)}
- function selectPart(id){const p=partData.find(x=>x.id===id);if(!p)return;selected=id;$('heartPartName').textContent=p.name;$('heartPartTag').textContent=p.tag;$('heartPartDefinition').textContent=p.definition;$('heartPartFunction').textContent=p.fn;$('heartPartEP').textContent=p.ep;$('heartPartIcon').textContent='✦';
+ function selectPart(id,zoomToPart=true){const p=partData.find(x=>x.id===id);if(!p)return;selected=id;$('heartPartName').textContent=p.name;$('heartPartTag').textContent=p.tag;$('heartPartDefinition').textContent=p.definition;$('heartPartFunction').textContent=p.fn;$('heartPartEP').textContent=p.ep;$('heartPartIcon').textContent='✦';
   $('heartPartList').querySelectorAll('[data-part]').forEach(b=>b.classList.toggle('active',b.dataset.part===id));
   // Keep the full anatomy visible and mark the selected structure with a small dark dot.
   const oldProxy=scene?.getObjectByName('isolated-anatomy-proxy');if(oldProxy){scene.remove(oldProxy);oldProxy.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose()}})}
   if(heartRoot)heartRoot.traverse(o=>{if(o.isMesh)o.visible=true});
   Object.entries(partObjects).forEach(([k,objs])=>objs.forEach(o=>{if(o.material&&o.material.emissive){o.material.emissive.set('#000000');o.material.emissiveIntensity=0}}));
   updateSelectionHalo(p);
-  focusPart(id,true);
-  $('heartViewStatus').textContent='Focused · '+p.name;
+  if(zoomToPart)focusPart(id,true);
+  $('heartViewStatus').textContent=zoomToPart?'Focused · '+p.name:(modelLoaded?'Model ready · drag, zoom, select':'Interactive schematic · drag, zoom, select');
  }
  function makeAnatomyList(){const list=$('heartPartList');partData.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='heartPartButton';b.dataset.part=p.id;b.style.setProperty('--part-color',p.color);b.textContent=p.name;b.addEventListener('click',()=>{selectPart(p.id);focusPart(p.id)});list.append(b)});$('heartPartCount').textContent=partData.length+' structures'}
  function focusPart(id,zoom=false){const p=partData.find(x=>x.id===id);if(!p||!controls||!camera)return;const target=new THREE.Vector3(...p.pos);const direction=camera.position.clone().sub(controls.target);if(direction.lengthSq()<.001)direction.set(0,.15,1);direction.normalize();const distance=zoom?Math.max(1.65,Math.min(2.6,Math.max(...p.scale)*4.2)):direction.length();controls.target.copy(target);camera.position.copy(target).addScaledVector(direction,distance);controls.update()}
@@ -527,11 +527,11 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
     // Use the downloaded 3D heart model as requested; anatomy selection markers remain aligned to the model's hit targets.
     if(!gltf.scene)return;
     const model=gltf.scene;const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());const max=Math.max(size.x,size.y,size.z)||1;model.scale.setScalar(2.25/max);model.position.sub(center.multiplyScalar(2.25/max));model.position.y-=.02;
-    model.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.side=THREE.DoubleSide;o.userData.partId='';o.castShadow=false;o.receiveShadow=false}});
+    model.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.side=THREE.DoubleSide;if(o.material.color&&o.material.color.r+o.material.color.g+o.material.color.b<.18){o.material.color.set('#b94760');o.material.roughness=.58;o.material.metalness=0}o.userData.partId='';o.castShadow=false;o.receiveShadow=false}});
     realHeartRoot=model;heartRoot.visible=false;scene.add(model);heartRoot=model;modelLoaded=true;hitTargets=[];partObjects={};
     // Anatomical hit targets are intentionally transparent overlays; the model itself remains the visual reference.
     partData.forEach(p=>{const hit=new THREE.Mesh(new THREE.SphereGeometry(1,18,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(...p.pos);hit.scale.set(...p.scale.map(x=>x*1.08));hit.userData.partId=p.id;model.add(hit);hitTargets.push(hit);(partObjects[p.id]||(partObjects[p.id]=[])).push(hit)});
-    $('heartModelCredit').textContent='BodyParts3D-derived model · CC BY 4.0';$('heartViewStatus').textContent='Model ready · drag, zoom, select';$('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',300);showRoute(activeRoute);selectPart(selected);if(exploded)setExploded(true);if(conductionVisible)setConduction(true);
+    $('heartModelCredit').textContent='BodyParts3D-derived model · CC BY 4.0';$('heartViewStatus').textContent='Model ready · drag, zoom, select';$('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',300);showRoute(activeRoute);selectPart(selected,false);if(exploded)setExploded(true);if(conductionVisible)setConduction(true);
   },xhr=>{if(xhr.total>0){$('heartViewStatus').textContent='Loading anatomical model · '+Math.round(xhr.loaded/xhr.total*100)+'%';$('heartCanvasLoading').style.display='flex';$('heartCanvasLoading').style.opacity='1';$('heartCanvasLoading').querySelector('b').textContent='Loading anatomical heart';$('heartCanvasLoading').querySelector('small').textContent=Math.round(xhr.loaded/xhr.total*100)+'% downloaded';}},err=>{console.warn('Heart model unavailable; using schematic model.',err);$('heartViewStatus').textContent='Interactive schematic · drag, zoom, select';$('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',300)});
   controls.addEventListener('start',()=>{$('heartHint').style.opacity='.25'});controls.addEventListener('change',()=>{if(!auto)$('heartViewStatus').textContent=modelLoaded?'Model ready · drag, zoom, select':'Interactive schematic · drag, zoom, select'});
   canvas.addEventListener('pointerup',e=>{if(e.pointerType==='touch'&&e.isPrimary===false)return;const rect=canvas.getBoundingClientRect();mouse.x=((e.clientX-rect.left)/rect.width)*2-1;mouse.y=-((e.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObjects(hitTargets,true);if(hits.length&&hits[0].object.userData.partId){selectPart(hits[0].object.userData.partId);$('heartHint').style.opacity='.25'}});
@@ -551,7 +551,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
   const resize=()=>{if(!renderer)return;const w=wrap.clientWidth,h=wrap.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
   if('ResizeObserver'in window){resizeObs=new ResizeObserver(resize);resizeObs.observe(wrap)}else window.addEventListener('resize',resize);
   const tick=()=>{requestAnimationFrame(tick);if(controls)controls.update();if(renderer&&scene&&camera)renderer.render(scene,camera)};tick();
-  selectPart(selected);
+  selectPart(selected,false);
  }
  function boot(){if(!wrap||wrap.dataset.booted)return;wrap.dataset.booted='1';initScene()}
  document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.page==='heart'){boot();setTimeout(()=>{if(renderer){const w=wrap.clientWidth,h=wrap.clientHeight;if(w&&h){camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}}},80)}}));
