@@ -119,7 +119,7 @@ body.dark #heartCanvasWrap{background:radial-gradient(ellipse at 50% 44%,#263b53
   </div>
   <aside class="heartSide">
     <section class="panel heartInfo" aria-live="polite"><div class="eyebrow">SELECTED STRUCTURE</div><div class="heartInfoTitle"><span id="heartPartIcon">♡</span><div><h2 id="heartPartName">Right atrium</h2><span class="heartPartTag" id="heartPartTag">CHAMBER</span></div></div><p id="heartPartDefinition">The right atrium receives oxygen-poor blood returning from the body and directs it through the tricuspid valve into the right ventricle.</p><div class="heartInfoSub"><h3>What it does</h3><p id="heartPartFunction">It receives systemic venous blood and contributes to ventricular filling.</p></div><div class="heartInfoSub"><h3>EP connection</h3><p id="heartPartEP">The sinus node is located near the junction of the superior vena cava and right atrium. Atrial signals and pacing sites can be studied here.</p></div><button class="btn secondary heartLocate" id="heartLocate" type="button">Focus this structure</button></section>
-    <section class="panel"><div class="head"><h3>Explore anatomy</h3><span class="pill" id="heartPartCount">12 structures</span></div><p class="heartMuted">Choose a structure here or tap it in the 3D model.</p><div class="heartPartList" id="heartPartList"></div></section>
+    <section class="panel" id="heartExplorePanel"><div class="head"><h3>Explore anatomy</h3><span class="pill" id="heartPartCount">12 structures</span></div><p class="heartMuted">Choose a structure here or tap it in the 3D model.</p><div class="heartPartList" id="heartPartList"></div></section><section class="panel" id="heartExpandedExplorePanel" style="display:none"><div class="head"><h3>Explore expanded anatomy</h3><span class="pill">Separated view</span></div><p class="heartMuted">Select a labeled structure to zoom in and inspect it in the exploded model.</p><div class="heartPartList" id="heartExpandedPartList"></div></section>
   </aside>
 </div>
 <div class="heartLowerGrid">
@@ -454,7 +454,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
    Object.entries(labelEls).forEach(([id,el])=>{
     const obj=realHeartRoot.children.find(o=>o.userData.anatomyLabelId===id);
     if(!obj){el.style.display='none';return}
-    const box=new THREE.Box3().setFromObject(obj),v=box.getCenter(new THREE.Vector3());v.y=box.max.y+.055;v.project(camera);
+    const box=new THREE.Box3().setFromObject(obj),v=box.getCenter(new THREE.Vector3());v.y+=Math.max(.07,(box.max.y-box.min.y)*.12);v.project(camera);
     const x=(v.x*.5+.5)*w,y=(-v.y*.5+.5)*h,onScreen=v.z>-1&&v.z<1&&x>0&&x<w&&y>0&&y<h;
     el.style.display=onScreen?'block':'none';el.style.left=x+'px';el.style.top=y+'px';
    });
@@ -490,6 +490,9 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
  function clearGroup(group){if(!group)return;group.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose()}});group.parent?.remove(group)}
  function setExploded(show){
   exploded=show;
+  const normalExplore=$('heartExplorePanel'),expandedExplore=$('heartExpandedExplorePanel');
+  if(normalExplore)normalExplore.style.display=show?'none':'';
+  if(expandedExplore)expandedExplore.style.display=show?'':'none';
   const b=$('heartExplode');
   if(modelLoaded&&realHeartRoot){
    heartRoot=realHeartRoot;
@@ -543,8 +546,8 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
   if(zoomToPart)focusPart(id,true);
   $('heartViewStatus').textContent=zoomToPart?'Focused · '+p.name:(modelLoaded?'Model ready · drag, zoom, select':'Interactive schematic · drag, zoom, select');
  }
- function makeAnatomyList(){const list=$('heartPartList');partData.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='heartPartButton';b.dataset.part=p.id;b.style.setProperty('--part-color',p.color);b.textContent=p.name;b.addEventListener('click',()=>{selectPart(p.id);focusPart(p.id)});list.append(b)});$('heartPartCount').textContent=partData.length+' structures'}
- function focusPart(id,zoom=false){const p=partData.find(x=>x.id===id);if(!p||!controls||!camera)return;const target=new THREE.Vector3(...p.pos);const direction=camera.position.clone().sub(controls.target);if(direction.lengthSq()<.001)direction.set(0,.15,1);direction.normalize();const distance=zoom?Math.max(1.65,Math.min(2.6,Math.max(...p.scale)*4.2)):direction.length();controls.target.copy(target);camera.position.copy(target).addScaledVector(direction,distance);controls.update()}
+ function makeAnatomyList(){const lists=[$('heartPartList'),$('heartExpandedPartList')].filter(Boolean);lists.forEach(list=>{partData.forEach(p=>{const b=document.createElement('button');b.type='button';b.className='heartPartButton';b.dataset.part=p.id;b.style.setProperty('--part-color',p.color);b.textContent=p.name;b.addEventListener('click',()=>{selectPart(p.id,true,true)});list.append(b)})});$('heartPartCount').textContent=partData.length+' structures'}
+ function focusPart(id,zoom=false){const p=partData.find(x=>x.id===id);if(!p||!controls||!camera)return;let target=new THREE.Vector3(...p.pos),size=new THREE.Vector3(...p.scale).multiplyScalar(2);if(exploded&&heartRoot){const candidates=[];heartRoot.children.forEach(o=>{if(o.userData?.partId===id||o.userData?.anatomyLabelId===id)candidates.push(o)});if(!candidates.length&&partObjects[id])candidates.push(...partObjects[id]);if(candidates.length){heartRoot.updateMatrixWorld(true);const bounds=new THREE.Box3();candidates.forEach(o=>bounds.expandByObject(o));if(!bounds.isEmpty()){target.copy(bounds.getCenter(new THREE.Vector3()));bounds.getSize(size)}}}const direction=camera.position.clone().sub(controls.target);if(direction.lengthSq()<.001)direction.set(0,.15,1);direction.normalize();const maxDim=Math.max(size.x,size.y,size.z);const distance=zoom?Math.max(.85,Math.min(2.6,maxDim*1.8)):direction.length();controls.target.copy(target);camera.position.copy(target).addScaledVector(direction,distance);camera.lookAt(target);controls.update()}
  function initScene(){
   try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.setSize(wrap.clientWidth,wrap.clientHeight,false);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15}
   catch(e){$('heartCanvasLoading').innerHTML='<b>3D graphics are unavailable here</b><small>The anatomy list and explanations remain available. Try a browser/device with WebGL enabled.</small>';return}
