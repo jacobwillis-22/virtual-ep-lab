@@ -516,7 +516,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
    $('heartViewStatus').textContent=show?'Exploded anatomy · individual anatomical meshes separated':'Anatomical model · drag, zoom, select';
    showRoute(activeRoute);
    if(conductionVisible)setConduction(true);
-   if(show){camera.position.add(new THREE.Vector3(0,0,2.0));controls.update()}
+   if(show){const viewDirection=camera.position.clone().sub(controls.target);if(viewDirection.lengthSq()<.001)viewDirection.set(0,.15,1);viewDirection.normalize();camera.position.copy(controls.target).addScaledVector(viewDirection,14);controls.update()}
    selectPart(selected,false,false);
   }else if(fallbackRoot){
    fallbackRoot.children.forEach((o,i)=>{
