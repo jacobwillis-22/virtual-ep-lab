@@ -476,7 +476,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
     if(!gltf.scene)return;
     const model=gltf.scene;const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());const max=Math.max(size.x,size.y,size.z)||1;model.scale.setScalar(2.25/max);model.position.sub(center.multiplyScalar(2.25/max));model.position.y-=.02;
     model.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.side=THREE.DoubleSide;o.userData.partId='';o.castShadow=false;o.receiveShadow=false}});
-    heartRoot.visible=false;scene.add(model);heartRoot=model;modelLoaded=true;
+    heartRoot.visible=false;scene.add(model);heartRoot=model;modelLoaded=true;hitTargets=[];partObjects={};
     // Anatomical hit targets are intentionally transparent overlays; the model itself remains the visual reference.
     partData.forEach(p=>{const hit=new THREE.Mesh(new THREE.SphereGeometry(1,18,12),new THREE.MeshBasicMaterial({transparent:true,opacity:0,depthWrite:false}));hit.position.set(...p.pos);hit.scale.set(...p.scale.map(x=>x*1.08));hit.userData.partId=p.id;model.add(hit);hitTargets.push(hit);(partObjects[p.id]||(partObjects[p.id]=[])).push(hit)});
     $('heartModelCredit').textContent='BodyParts3D-derived model · CC BY 4.0';$('heartViewStatus').textContent='Model ready · drag, zoom, select';$('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',300);showRoute(activeRoute);selectPart(selected);
@@ -493,7 +493,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
  }
  function boot(){if(!wrap||wrap.dataset.booted)return;wrap.dataset.booted='1';initScene()}
  document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.page==='heart'){boot();setTimeout(()=>{if(renderer){const w=wrap.clientWidth,h=wrap.clientHeight;if(w&&h){camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}}},80)}}));
- makeAnatomyList();selectPart(selected);
+ selectPart(selected);
  // Wait until user opens the tab so the renderer doesn't initialize at zero width.
  if(document.querySelector('#page-heart.active'))boot();
 })();
