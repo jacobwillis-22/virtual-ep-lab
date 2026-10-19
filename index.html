@@ -65,8 +65,8 @@ body.dark #termPopup .popupBody h4{color:#9dccff}
 <div class="section" id="pricing"><h2>Free tools + a guided curriculum</h2><p>Use the tools whenever you want. Follow the six-module curriculum when you want a more organized, step-by-step learning route.</p></div>
 <section class="pricingGrid">
 <article class="priceCard"><span class="priceTag">FREE TOOLS · ALWAYS</span><h3>Explore and practice</h3><p class="price"> $0 <small>forever</small></p><ul><li>Interactive Signal Lab</li><li>3D Heart exploration as features become available</li><li>Medical Dictionary with plain-language explanations</li><li>Virtual EP Simulator when released</li></ul><button class="btn secondary" data-page="lab">Start exploring</button></article>
-<article class="priceCard featured"><span class="priceTag">CURRICULUM</span><h3>Follow the curriculum</h3><p class="price">Guided curriculum · coming soon</p><p>A structured route through the six modules, with planned lessons, checkpoints, practice questions, worked examples, and progress tracking.</p><ul><li>Organized from foundational to advanced topics</li><li>Detailed explanations and review</li><li>Designed for learning, not clinical qualification</li></ul><button class="btn primary" id="pathNotify">Coming soon</button><button class="btn secondary" id="pathDetails">View planned curriculum</button></article>
-<article class="priceCard"><span class="priceTag">FUTURE EXPANSION</span><h3>More curriculum paths</h3><p class="price">Details coming soon</p><p>Additional paths may cover ECG foundations, timing and intervals, and introductory EP concepts.</p><ul><li>Buy learning paths—not access to the free tools</li><li>Future path details and pricing will be published here</li></ul></article>
+<article class="priceCard featured"><span class="priceTag">CURRICULUM</span><h3>Follow the curriculum</h3><p class="price">Guided curriculum · coming soon</p><p>A structured route through the six modules, with planned lessons, checkpoints, practice questions, worked examples, and progress tracking.</p><ul><li>Organized from foundational to advanced topics</li><li>Detailed explanations and review</li><li>Designed for learning, not clinical qualification</li></ul><button class="btn secondary" id="pathDetails">View planned curriculum</button></article>
+<article class="priceCard"><span class="priceTag">FUTURE EXPANSION</span><h3>More curriculum paths</h3><p class="price">Details coming soon</p><p>Additional paths may cover ECG foundations, timing and intervals, and introductory EP concepts.</p><ul><li>Buy learning paths—not access to the free tools</li><li>Future path details and pricing will be published here</li></ul><button class="btn primary" id="pathNotify">Coming soon</button></article>
 </section>
 <aside class="notice">Pricing and checkout are not active yet. No purchase is available on this prototype. Educational content is not a medical device and does not qualify anyone to perform clinical procedures.</aside>
 
@@ -98,8 +98,8 @@ body.dark #termPopup .popupBody h4{color:#9dccff}
 
 <section class="page" id="page-glossary">
 <header class="pageHero"><div class="eyebrow">Plain-language medical dictionary</div><h1>Understand the <span>words.</span></h1><p class="sub">Look up cardiac and electrophysiology terms with simple definitions, detailed explanations, and why each concept matters in learning.</p></header>
-<section class="flashStudy" aria-labelledby="flashTitle"><div class="flashTop"><div><div class="eyebrow">ACTIVE RECALL · STUDY DECK</div><h2 id="flashTitle">EP flashcards</h2><p>Choose a group, study the term, then click the card to flip it for the definition and breakdown. Each card shows the module(s) where the term appears.</p></div><span class="pill">58 cards · all dictionary terms</span></div><div class="flashControls"><label for="flashGroup" class="eyebrow">CARD GROUP</label><select id="flashGroup" aria-label="Choose flashcard group"><option value="all">All groups</option></select></div><button type="button" class="flashCard" id="flashCard" aria-label="Flip flashcard to reveal definition"><span class="flashInner"><span class="flashFace flashFront"><span class="flashLabel" id="flashCategory">HEART ANATOMY</span><h3 id="flashTerm">Loading term…</h3><div class="flashModules" id="flashModules"></div><p>Click to reveal the definition and breakdown</p></span><span class="flashFace flashBack"><span class="flashLabel">ANSWER · DEFINITION & BREAKDOWN</span><h3 id="flashTermBack">Term</h3><h4>Definition</h4><p class="flashDetail" id="flashDefinition"></p><h4>Term breakdown</h4><div class="flashDetail" id="flashBreakdown"></div><div class="flashModules" id="flashModulesBack"></div></span></span></button><div class="flashFoot"><small id="flashCount">Card 1 of 58</small><div class="flashProgress"><span id="flashProgressFill"></span></div><div class="flashBtns"><button type="button" class="flashBtn" id="flashShuffle">Shuffle</button><button type="button" class="flashBtn" id="flashPrev">Previous</button><button type="button" class="flashBtn primary" id="flashNext">Next card →</button></div></div></section>
-<div class="glossarySearch"><input id="termSearch" type="search" placeholder="Search a term, like atrium, depolarization, or ECG…" aria-label="Search medical terms"><span id="termCount">58 terms</span></div>
+<section class="flashStudy" aria-labelledby="flashTitle"><div class="flashTop"><div><div class="eyebrow">ACTIVE RECALL · STUDY DECK</div><h2 id="flashTitle">EP flashcards</h2><p>Choose a group, study the term, then click the card to flip it for the definition and breakdown. Each card shows the module(s) where the term appears.</p></div><span class="pill" id="flashTotal">A–Z · all dictionary terms</span></div><div class="flashControls"><label for="flashGroup" class="eyebrow">CARD GROUP</label><select id="flashGroup" aria-label="Choose flashcard group"><option value="all">All groups</option></select></div><button type="button" class="flashCard" id="flashCard" aria-label="Flip flashcard to reveal definition"><span class="flashInner"><span class="flashFace flashFront"><span class="flashLabel" id="flashCategory">HEART ANATOMY</span><h3 id="flashTerm">Loading term…</h3><div class="flashModules" id="flashModules"></div><p>Click to reveal the definition and breakdown</p></span><span class="flashFace flashBack"><span class="flashLabel">ANSWER · DEFINITION & BREAKDOWN</span><h3 id="flashTermBack">Term</h3><h4>Definition</h4><p class="flashDetail" id="flashDefinition"></p><h4>Term breakdown</h4><div class="flashDetail" id="flashBreakdown"></div><div class="flashModules" id="flashModulesBack"></div></span></span></button><div class="flashFoot"><small id="flashCount">Card 1 of 58</small><div class="flashProgress"><span id="flashProgressFill"></span></div><div class="flashBtns"><button type="button" class="flashBtn" id="flashShuffle">Shuffle</button><button type="button" class="flashBtn" id="flashPrev">Previous</button><button type="button" class="flashBtn primary" id="flashNext">Next card →</button></div></div></section>
+<div class="glossarySearch"><input id="termSearch" type="search" placeholder="Search a term, like atrium, depolarization, or ECG…" aria-label="Search medical terms"><span id="termCount">A–Z terms</span></div>
 <div class="glossaryGrid" id="glossaryGrid">
 <article class="termCard" data-terms="atrium atria atrial chamber"><div class="termGroup">HEART ANATOMY</div><h3>Atrium (plural: atria)</h3><p class="simpleDef">One of the heart’s two upper chambers.</p><details><summary>Explain it in more detail</summary><p>The right atrium receives blood returning from the body. The left atrium receives blood returning from the lungs. Both upper chambers help move blood into the lower chambers, called ventricles.</p><p><b>Why it matters in EP:</b> Electrical activity can begin in or travel through atrial tissue. A surface ECG may show atrial activity as P waves, although real recordings can be more complicated than a teaching diagram.</p><p><b>Remember:</b> Atrium = upper receiving chamber.</p></details></article>
 <article class="termCard" data-terms="ventricle ventricles ventricular chamber"><div class="termGroup">HEART ANATOMY</div><h3>Ventricle</h3><p class="simpleDef">One of the heart’s two lower pumping chambers.</p><details><summary>Explain it in more detail</summary><p>The right ventricle pumps blood toward the lungs. The left ventricle pumps blood out to the body. Their muscular walls contract to push blood forward.</p><p><b>Why it matters in EP:</b> The QRS complex on a typical surface ECG mainly represents the electrical activation of the ventricles. It is an electrical event, not a direct picture of the squeezing motion itself.</p><p><b>Remember:</b> Ventricle = lower pumping chamber.</p></details></article>
@@ -206,68 +206,151 @@ function renderFlashCard(){if(!flashDeck.length)return;const item=flashDeck[Math
 function resetFlashDeck(){const group=flashGroup.value;flashDeck=[...document.querySelectorAll('#glossaryGrid .termCard')].filter(card=>group==='all'||card.querySelector('.termGroup')?.textContent.trim()===group).map(card=>{const item=allFlashItems.find(x=>x.card===card);return item;}).filter(Boolean);flashIndex=0;renderFlashCard();}
 const allFlashItems=[];
 function initFlashcards(){buildFlashDeck();allFlashItems.push(...flashDeck);flashGroup.addEventListener('change',()=>{resetFlashDeck()});flashCard.addEventListener('click',()=>{flashCard.classList.toggle('flipped')});$('flashPrev').addEventListener('click',()=>{if(!flashDeck.length)return;flashIndex=(flashIndex-1+flashDeck.length)%flashDeck.length;renderFlashCard()});$('flashNext').addEventListener('click',()=>{if(!flashDeck.length)return;flashIndex=(flashIndex+1)%flashDeck.length;renderFlashCard()});$('flashShuffle').addEventListener('click',()=>{for(let i=flashDeck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[flashDeck[i],flashDeck[j]]=[flashDeck[j],flashDeck[i]]}flashIndex=0;renderFlashCard()});}
-const vocabulary=[
- {key:'atrium',aliases:['atria','atrium']},{key:'ventricle',aliases:['ventricles','ventricular','ventricle']},
- {key:'ecg',aliases:['electrocardiogram','ECG','EKG']},{key:'p wave',aliases:['P waves','P-wave','P wave']},
- {key:'qrs complex',aliases:['QRS complexes','QRS complex','QRS']},{key:'t wave',aliases:['T waves','T-wave','T wave']},
- {key:'depolarization',aliases:['depolarization','depolarize','depolarizing']},{key:'repolarization',aliases:['repolarization','repolarize','repolarizing']},
- {key:'rhythm regularity',aliases:['rhythm regularity','regularity']},{key:'r–r interval',aliases:['R-R intervals','R–R intervals','R-R interval','R–R interval','RR interval','R-wave peaks']},
- {key:'intracardiac electrogram',aliases:['intracardiac electrograms','intracardiac electrogram','electrograms','electrogram']},{key:'electrophysiology',aliases:['electrophysiology','EP study','cardiac electrophysiology']},
- {key:"right atrium",aliases:["Right atrium"]},
- {key:"left atrium",aliases:["Left atrium"]},
- {key:"sa node",aliases:["SA node"]},
- {key:"av node",aliases:["AV node"]},
- {key:"his bundle",aliases:["His bundle"]},
- {key:"bundle branches",aliases:["Bundle branches"]},
- {key:"purkinje fibers",aliases:["Purkinje fibers"]},
- {key:"pr interval",aliases:["PR interval"]},
- {key:"qrs duration",aliases:["QRS duration"]},
- {key:"qt interval",aliases:["QT interval"]},
- {key:"st segment",aliases:["ST segment"]},
- {key:"sinus rhythm",aliases:["Sinus rhythm"]},
- {key:"heart rate",aliases:["Heart rate"]},
- {key:"artifact",aliases:["Artifact"]},
- {key:"electrophysiology study",aliases:["Electrophysiology study"]},
- {key:"electrode",aliases:["Electrode"]},
- {key:"catheter",aliases:["Catheter"]},
- {key:"pacing",aliases:["Pacing"]},
- {key:"pacing stimulus",aliases:["Pacing stimulus"]},
- {key:"capture",aliases:["Capture"]},
- {key:"refractory period",aliases:["Refractory period"]},
- {key:"conduction",aliases:["Conduction"]},
- {key:"conduction delay",aliases:["Conduction delay"]},
- {key:"intracardiac electrogram",aliases:["Intracardiac electrogram"]},
- {key:"atrial electrogram",aliases:["Atrial electrogram"]},
- {key:"ventricular electrogram",aliases:["Ventricular electrogram"]},
- {key:"his potential",aliases:["His potential"]},
- {key:"a-h interval",aliases:["A-H interval"]},
- {key:"h-v interval",aliases:["H-V interval"]},
- {key:"activation sequence",aliases:["Activation sequence"]},
- {key:"local activation time",aliases:["Local activation time"]},
- {key:"arrhythmia",aliases:["Arrhythmia"]},
- {key:"tachycardia",aliases:["Tachycardia"]},
- {key:"bradycardia",aliases:["Bradycardia"]},
- {key:"supraventricular tachycardia (svt)",aliases:["Supraventricular tachycardia (SVT)","Supraventricular tachycardia"]},
- {key:"atrial fibrillation",aliases:["Atrial fibrillation"]},
- {key:"atrial flutter",aliases:["Atrial flutter"]},
- {key:"ventricular tachycardia (vt)",aliases:["Ventricular tachycardia (VT)","Ventricular tachycardia"]},
- {key:"re-entry",aliases:["Re-entry"]},
- {key:"automaticity",aliases:["Automaticity"]},
- {key:"ectopic beat",aliases:["Ectopic beat"]},
- {key:"electroanatomical mapping",aliases:["Electroanatomical mapping"]},
- {key:"ablation",aliases:["Ablation"]},
- {key:"radiofrequency energy",aliases:["Radiofrequency energy"]},
- {key:"cryoablation",aliases:["Cryoablation"]},
- {key:"pulmonary veins",aliases:["Pulmonary veins"]}
-];
+const requestedMedicalTerms=["Ablation","Ablation catheter","Accessory pathway","Action potential","Activated clotting time (ACT)","Acute coronary syndrome (ACS)","Adenosine","Atrial activation","Atrial appendage","Atrial arrhythmia","Atrial fibrillation (AF/AFib)","Atrial flutter (AFL)","Atrial pacing","Atrial tachycardia (AT)","Atrioventricular (AV) block","Atrioventricular (AV) node","Atrioventricular nodal reentrant tachycardia (AVNRT)","Atrioventricular reentrant tachycardia (AVRT)","Automaticity","Autonomic nervous system","AV dissociation","AV junction","AV nodal conduction","Baseline rhythm","Beat-to-beat variability","Bifascicular block","Biatrial activation","Bidirectional block","Bigeminy","Bradyarrhythmia","Bradycardia","Brugada syndrome","Bundle branch block (BBB)","Bundle of His","Cardiac arrest","Cardiac conduction system","Cardiac cycle","Cardiac electrophysiologist","Cardiac output","Cardiac resynchronization therapy (CRT)","Cardiac resynchronization therapy-defibrillator (CRT-D)","Cardiac resynchronization therapy-pacemaker (CRT-P)","Cardiac mapping","Cardioversion","Catheter","Catheter ablation","Capture","Capture threshold","CHA₂DS₂-VASc score","Circus movement","Clinical arrhythmia","Conduction","Conduction delay","Conduction system disease","Conduction velocity","Congenital heart block","Couplet","Cryoablation","Cryoballoon ablation","Decapolar catheter","Delayed afterdepolarization (DAD)","Depolarization","Diastole","Differential pacing","Direct-current cardioversion (DCCV)","Direction of conduction","Disopyramide","Dual-chamber pacemaker","Dual AV nodal physiology","Dysrhythmia","Ectopic beat","Ectopic focus","Ejection fraction (EF)","Elective cardioversion","Electroanatomic mapping","Electrogram (EGM)","Electrode","Electrophysiology (EP)","Electrophysiology study (EPS)","Electrocardiogram (ECG/EKG)","Electrolyte imbalance","Entrainment","Epicardium","Escape beat","Escape rhythm","Esophageal electrode","Fascicular block","Fascicular ventricular tachycardia","First-degree AV block","Flutter waves","Focal atrial tachycardia","Fractionated electrogram","Fusion beat","Functional block","Generator","Heart block","Heart rate","Hemodynamics","His bundle recording","His-Purkinje system","Holter monitor","Hyperkalemia","Hypokalemia","Hypomagnesemia","Implantable cardioverter-defibrillator (ICD)","Implantable loop recorder (ILR)","Impulse formation","Impulse propagation","Inappropriate sinus tachycardia (IST)","Induction","Inferior leads","Intracardiac echocardiography (ICE)","Intracardiac electrogram","Intracardiac pacing","Interatrial conduction","Intermittent heart block","Interventricular conduction","Ischemia","Junctional escape beat","Junctional rhythm","Junctional tachycardia","Lead","Lead dislodgement","Leadless pacemaker","Left atrial appendage (LAA)","Left bundle branch block (LBBB)","Left ventricular ejection fraction (LVEF)","Long QT syndrome (LQTS)","Loop recorder","Macroreentrant tachycardia","Mapping catheter","Mechanical capture","Microreentry","Monomorphic ventricular tachycardia","Multifocal atrial tachycardia (MAT)","Multifocal PVCs","Myocardial infarction (MI)","Myocardium","Narrow-complex tachycardia","Nonconducted PAC","Non-sustained ventricular tachycardia (NSVT)","Nonspecific intraventricular conduction delay (IVCD)","Normal sinus rhythm (NSR)","Oversensing","Pacing","Pacing artifact","Pacing threshold","Palpitations","Parahisian pacing","Paroxysmal atrial fibrillation","Paroxysmal supraventricular tachycardia (PSVT)","Permanent pacemaker","Phase 0 depolarization","Phase 3 repolarization","Polymorphic ventricular tachycardia","Premature atrial contraction (PAC)","Premature ventricular contraction (PVC)","Pre-excitation","Programmed electrical stimulation (PES)","Prolonged PR interval","Prolonged QT interval","Pulmonary vein isolation (PVI)","Purkinje fibers","QRS complex","QT interval","QT correction (QTc)","Radiofrequency ablation (RFA)","Reentry","Refractory period","Repolarization","Right bundle branch block (RBBB)","Right ventricular outflow tract (RVOT)","Sinus arrhythmia","Sinus bradycardia","Sinus node dysfunction (SND)","Sinus pause","Sinus rhythm","Sinus tachycardia","Sinoatrial (SA) node","Single-chamber pacemaker","Sotalol","ST segment","Stimulus-to-QRS interval","Stroke","Subcutaneous ICD (S-ICD)","Supraventricular ectopy","Supraventricular tachycardia (SVT)","Syncope","Tachyarrhythmia","Tachycardia","Telemetry","Temporary pacemaker","Third-degree AV block","Three-dimensional electroanatomic mapping","Torsades de pointes","Transseptal puncture","Transthoracic echocardiogram (TTE)","Trigger","Triggered activity","T-wave alternans","Unifocal PVCs","Vagal maneuver","Ventricular activation","Ventricular arrhythmia","Ventricular fibrillation (VF/VFib)","Ventricular pacing","Ventricular premature beat (VPB)","Ventricular septum","Ventricular tachycardia (VT)","Ventricular tachycardia storm","Wandering atrial pacemaker","Wide-complex tachycardia (WCT)","Wolff-Parkinson-White (WPW) syndrome","Zero-fluoroscopy ablation"];
+const vocabulary=[];
+function normalizeTerm(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ')}
+function groupForTerm(term){
+ const t=term.toLowerCase();
+ if(/ablat|mapping|electroanatomic|pulmonary vein|transseptal|cryo|radiofrequency|catheter/.test(t))return 'MAPPING & ABLATION';
+ if(/electrogram|his bundle recording|intracardiac|activation|electrode|lead|pacing|capture|refractory|conduction|electrophysiology study|eps|entrainment|induction|stimulus|zero fluoroscopy/.test(t))return 'EP STUDY BASICS';
+ if(/ecg|ekg|qrs|qt |qt$|pr interval|st segment|inferior leads|t wave|holter|telemetry|baseline rhythm|beat to beat|r r interval/.test(t))return 'ECG FUNDAMENTALS';
+ if(/atri|ventric|tachycard|fibrillation|flutter|arrhythmia|bradycard|bigeminy|block|reentry|reentrant|re-entry|torsades|svt|pac$|pvc|escape rhythm|junctional|sinus|wpw|brugada|pre excitation|ectopic|dysrhythmia|palpitation|syncope|triggered activity|automaticity/.test(t))return 'ARRHYTHMIA CONCEPTS';
+ if(/heart|cardiac|myocard|epicard|diastole|ejection fraction|stroke|ischemia|electrolyte|hyperkalemia|hypokalemia|hypomagnesemia|acute coronary|adenosine|disopyramide|sotalol|hemodynamic|autonomic/.test(t))return 'HEART ANATOMY';
+ return 'EP STUDY BASICS';
+}
+function makeTermDefinition(term){
+ const t=term.toLowerCase();
+ const known={
+ 'ablation':'A procedure that destroys or isolates a small area of tissue responsible for an abnormal electrical rhythm.',
+ 'ablation catheter':'A catheter designed to deliver energy to targeted tissue during an ablation procedure.',
+ 'accessory pathway':'An extra electrical connection between the atria and ventricles that can allow conduction outside the normal AV pathway.',
+ 'action potential':'A brief change in a cell’s membrane voltage that carries electrical activation.',
+ 'adenosine':'A medication that temporarily slows conduction through the AV node and is used in selected rhythm assessments and treatments.',
+ 'atrial fibrillation (af/afib)':'An arrhythmia with disorganized atrial electrical activity, often producing an irregular ventricular rhythm.',
+ 'atrial flutter (afl)':'An atrial arrhythmia commonly caused by a rapid, organized reentrant electrical circuit.',
+ 'atrioventricular (av) node':'Specialized tissue that conducts impulses from the atria toward the ventricles and normally delays conduction.',
+ 'atrioventricular nodal reentrant tachycardia (avnrt)':'A rapid rhythm involving a reentrant circuit in or near the AV node.',
+ 'atrioventricular reentrant tachycardia (avrt)':'A reentrant tachycardia that uses the AV conduction system and an accessory pathway.',
+ 'automaticity':'The ability of certain cardiac cells to spontaneously generate electrical impulses.',
+ 'bradycardia':'A slower-than-expected heart rate; meaning depends on the person and clinical context.',
+ 'bundle of his':'A conduction structure that carries impulses from the AV node toward the right and left bundle branches.',
+ 'cardioversion':'A treatment intended to restore a more normal heart rhythm, using electrical energy or medication depending on context.',
+ 'catheter':'A thin, flexible tube that can be guided through blood vessels or other pathways for medical procedures.',
+ 'capture':'Successful activation of cardiac tissue by a pacing stimulus.',
+ 'conduction':'The spread of electrical activation through cardiac tissue.',
+ 'conduction delay':'Slower-than-usual propagation of an electrical impulse through part of the conduction system.',
+ 'cryoablation':'Ablation that uses extreme cold to alter targeted tissue.',
+ 'depolarization':'A change in membrane voltage that makes the inside of a cell less negative and can initiate activation.',
+ 'diastole':'The phase of the cardiac cycle when the heart muscle relaxes and the chambers fill.',
+ 'ectopic beat':'A heartbeat that originates outside the usual dominant pacemaker site.',
+ 'ejection fraction (ef)':'The proportion of blood in a ventricle that is pumped out with each contraction.',
+ 'electrogram (egm)':'A recording of electrical activity detected by an electrode near the tissue being studied.',
+ 'electrode':'A conductive contact used to record electrical signals or deliver stimulation.',
+ 'electrophysiology (ep)':'The study of the electrical activity and conduction system of the heart.',
+ 'electrophysiology study (eps)':'An invasive test that records intracardiac electrical signals and may use pacing to assess rhythm mechanisms.',
+ 'electrocardiogram (ecg/ekg)':'A surface recording of the heart’s electrical activity.',
+ 'entrainment':'A pacing technique that temporarily captures and resets a rhythm, helping assess its mechanism.',
+ 'heart rate':'The number of heartbeats per minute.',
+ 'hemodynamics':'The movement of blood through the circulation and the pressures and flows involved.',
+ 'implantable cardioverter-defibrillator (icd)':'An implanted device that can detect certain dangerous rhythms and deliver therapy.',
+ 'intracardiac electrogram':'A recording of electrical activity from electrodes positioned inside the heart.',
+ 'ischemia':'Insufficient blood flow and oxygen delivery to tissue.',
+ 'myocardial infarction (mi)':'Heart muscle injury or death caused by prolonged inadequate blood supply.',
+ 'myocardium':'The muscular tissue of the heart.',
+ 'pacing':'Using electrical stimuli to initiate cardiac depolarization.',
+ 'palpitations':'A sensation of the heartbeat, such as pounding, fluttering, racing, or skipped beats.',
+ 'premature atrial contraction (pac)':'An early heartbeat originating in atrial tissue.',
+ 'premature ventricular contraction (pvc)':'An early heartbeat originating in the ventricles.',
+ 'pulmonary vein isolation (pvi)':'An ablation strategy that electrically isolates pulmonary vein triggers from the left atrium, often used for atrial fibrillation.',
+ 'qrs complex':'The ECG waveform that mainly represents ventricular depolarization.',
+ 'qt interval':'The ECG interval spanning ventricular depolarization through repolarization.',
+ 'reentry':'A rhythm mechanism in which an electrical impulse repeatedly circulates through a pathway.',
+ 'refractory period':'A period when cardiac tissue cannot, or is less able to, be activated again.',
+ 'repolarization':'The return of a cell’s membrane voltage toward its resting state after depolarization.',
+ 'sinus rhythm':'A rhythm initiated by the sinoatrial node.',
+ 'sinus tachycardia':'A faster-than-usual rhythm initiated by the sinoatrial node.',
+ 'stroke':'A sudden brain injury caused by interrupted blood flow or bleeding; some cardiac conditions can increase risk.',
+ 'syncope':'A brief loss of consciousness caused by a temporary reduction in blood flow to the brain.',
+ 'tachycardia':'A faster-than-expected heart rate; significance depends on context and rhythm.',
+ 'torsades de pointes':'A specific form of polymorphic ventricular tachycardia associated with a prolonged QT interval.',
+ 'triggered activity':'Abnormal impulses caused by afterdepolarizations following a preceding action potential.',
+ 'ventricular fibrillation (vf/vfib)':'A chaotic ventricular rhythm that prevents effective pumping and is a medical emergency.',
+ 'ventricular tachycardia (vt)':'A fast rhythm originating in the ventricles that can be dangerous and requires prompt clinical assessment.',
+ 'wolff-parkinson-white (wpw) syndrome':'A condition involving ventricular pre-excitation through an accessory pathway, sometimes associated with tachyarrhythmias.'
+ };
+ if(known[t])return known[t];
+ if(/block/.test(t))return 'A term for impaired or interrupted electrical conduction through part of the heart’s conduction system. The exact meaning depends on the location and degree of block.';
+ if(/pacemaker|defibrillator|loop recorder|generator/.test(t))return 'A device or implanted system used to monitor cardiac rhythm or provide electrical therapy, depending on the device type.';
+ if(/tachycardia|fibrillation|flutter|arrhythmia|dysrhythmia|bigeminy|couplet|ectopy|ectopic|escape rhythm/.test(t))return 'A cardiac rhythm term describing an abnormal rhythm pattern or its electrical origin. Clinical interpretation depends on the ECG and the patient’s context.';
+ if(/interval|segment|wave|complex|lead/.test(t))return 'A named ECG feature or measurement used to describe the timing and pattern of cardiac electrical activity.';
+ if(/conduction|activation|propagation|impulse|bundle|node|purkinje|junction/.test(t))return 'A term describing cardiac electrical tissue, impulse formation, or the route and timing of electrical conduction.';
+ if(/ablation|mapping|catheter|puncture|fluoroscopy/.test(t))return 'A procedure or tool used in electrophysiology to locate, assess, or treat cardiac electrical tissue.';
+ if(/hyperkalemia|hypokalemia|hypomagnesemia|electrolyte/.test(t))return 'A change in electrolyte balance that can affect cardiac electrical activity and rhythm.';
+ if(/cardioversion/.test(t))return 'A treatment intended to restore a more normal rhythm, using electrical energy or medication depending on the situation.';
+ if(/activation|depolarization|repolarization|action potential/.test(t))return 'A concept describing how cardiac cells generate or recover from the electrical signal that coordinates each heartbeat.';
+ if(/syndrome/.test(t))return 'A recognized combination of clinical or electrical findings. Diagnosis and management require professional medical assessment.';
+ return 'A cardiac electrophysiology term used to describe a rhythm, structure, measurement, device, medication, or procedure. Its significance depends on the full clinical context.';
+}
+function addRequestedDictionaryTerms(){
+ const grid=document.getElementById('glossaryGrid');if(!grid)return;
+ const existing=new Set([...grid.querySelectorAll('.termCard h3')].map(h=>normalizeTerm(h.textContent.replace(/\s*\([^)]*\)/g,''))));
+ requestedMedicalTerms.forEach(term=>{
+   if(existing.has(normalizeTerm(term)))return;
+   const group=groupForTerm(term),def=makeTermDefinition(term);
+   const card=document.createElement('article');card.className='termCard';card.dataset.terms=normalizeTerm(term)+' '+normalizeTerm(group);
+   const g=document.createElement('div');g.className='termGroup';g.textContent=group;
+   const h=document.createElement('h3');h.textContent=term;
+   const p=document.createElement('p');p.className='simpleDef';p.textContent=def;
+   const details=document.createElement('details');const sum=document.createElement('summary');sum.textContent='Explain it in more detail';
+   const body=document.createElement('p');body.textContent=def+' This entry is for learning terminology only; it is not a diagnostic or treatment recommendation.';
+   const remember=document.createElement('p');const b=document.createElement('b');b.textContent='Remember: ';remember.append(b,document.createTextNode(term+' is a term you may encounter in cardiac electrophysiology.'));
+   details.append(sum,body,remember);card.append(g,h,p,details);grid.append(card);existing.add(normalizeTerm(term));
+ });
+ const cards=[...grid.querySelectorAll('.termCard')];
+ cards.sort((a,b)=>a.querySelector('h3').textContent.localeCompare(b.querySelector('h3').textContent,undefined,{sensitivity:'base'}));
+ cards.forEach(c=>grid.append(c));
+ document.getElementById('termCount').textContent=cards.length+' terms · A–Z';
+ const total=document.getElementById('flashTotal');if(total)total.textContent=cards.length+' cards · A–Z';
+}
+addRequestedDictionaryTerms();
 const dictionaryTerms={};
-document.querySelectorAll('#glossaryGrid .termCard').forEach(card=>{const title=card.querySelector('h3')?.textContent.trim()||'Medical term';const simple=card.querySelector('.simpleDef')?.textContent.trim()||'';const details=card.querySelector('details');const v=vocabulary.find(x=>x.key===title.toLowerCase()||x.aliases.some(a=>title.toLowerCase()===a.toLowerCase()||title.toLowerCase().startsWith(a.toLowerCase())));dictionaryTerms[v?.key||title.toLowerCase()]={title,definition:simple,breakdown:details?details.innerHTML:'<p>See the Medical Dictionary for more details.</p>'};});
-function openTerm(key){const entry=dictionaryTerms[key];if(!entry)return;$('termPopupTitle').textContent=entry.title;$('termPopupDefinition').textContent=entry.definition;$('termPopupBreakdown').innerHTML=entry.breakdown;$('termPopup').classList.add('open');}
+document.querySelectorAll('#glossaryGrid .termCard').forEach(card=>{const title=card.querySelector('h3')?.textContent.trim()||'Medical term';const simple=card.querySelector('.simpleDef')?.textContent.trim()||'';const details=card.querySelector('details');dictionaryTerms[title.toLowerCase()]={title,definition:simple,breakdown:details?details.innerHTML:'<p>See the Medical Dictionary for more details.</p>'};});
+function buildVocabularyFromDictionary(){
+ const cards=[...document.querySelectorAll('#glossaryGrid .termCard')];
+ const seen=new Set();
+ cards.forEach(card=>{
+   const title=card.querySelector('h3')?.textContent.trim();if(!title)return;
+   const key=title.toLowerCase();
+   const aliases=[title];
+   const inside=title.match(/^(.*?)\s*\(([^)]+)\)$/);
+   if(inside){aliases.push(inside[1].trim());inside[2].split(/[\/;,]/).map(x=>x.trim()).filter(Boolean).forEach(x=>aliases.push(x));}
+   const extra={
+    'Atrioventricular (AV) node':['AV node','atrioventricular node'],
+    'Sinoatrial (SA) node':['SA node','sinoatrial node'],
+    'Electrocardiogram (ECG/EKG)':['ECG','EKG','electrocardiogram'],
+    'Electrophysiology (EP)':['EP','electrophysiology'],
+    'Ventricular tachycardia (VT)':['VT','ventricular tachycardia'],
+    'Atrial fibrillation (AF/AFib)':['AF','AFib','atrial fibrillation'],
+    'Atrial flutter (AFL)':['AFL','atrial flutter'],
+    'Premature atrial contraction (PAC)':['PAC','premature atrial contraction'],
+    'Premature ventricular contraction (PVC)':['PVC','premature ventricular contraction'],
+    'Bundle branch block (BBB)':['BBB','bundle branch block'],
+    'Left bundle branch block (LBBB)':['LBBB','left bundle branch block'],
+    'Right bundle branch block (RBBB)':['RBBB','right bundle branch block'],
+    'Supraventricular tachycardia (SVT)':['SVT','supraventricular tachycardia']
+   };
+   (extra[title]||[]).forEach(x=>aliases.push(x));
+   const unique=aliases.filter(a=>a&&a.length>1&&!seen.has(normalizeTerm(a))&&seen.add(normalizeTerm(a)));
+   vocabulary.push({key,aliases:unique});
+ });
+}
+buildVocabularyFromDictionary();
+function openTerm(key){const entry=dictionaryTerms[key]||dictionaryTerms[normalizeTerm(key)];if(!entry)return;$('termPopupTitle').textContent=entry.title;$('termPopupDefinition').textContent=entry.definition;$('termPopupBreakdown').innerHTML=entry.breakdown;$('termPopup').classList.add('open');}
 function closeTerm(){$('termPopup').classList.remove('open')}$('termPopupClose').addEventListener('click',closeTerm);document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTerm()});
 function makeMedicalTermsClickable(){const root=document.querySelector('.shell');if(!root)return;const aliases=[];vocabulary.forEach(v=>v.aliases.forEach(alias=>aliases.push({alias,key:v.key})));aliases.sort((a,b)=>b.alias.length-a.alias.length);
 const special=String.fromCharCode(36)+'*+?.()|[]{}';const escapeRegex=s=>s.split('').map(c=>special.includes(c)||c==='\\'?'\\'+c:c).join('');const pattern=new RegExp('(^|[^A-Za-z0-9])('+aliases.map(x=>escapeRegex(x.alias)).join('|')+')(?=$|[^A-Za-z0-9])','gi');
 const skip=new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','BUTTON','SELECT','OPTION','SVG','PATH','CODE','SUMMARY']);const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){const p=node.parentElement;if(!p||skip.has(p.tagName)||p.closest('#page-glossary')||p.closest('#termPopup')||p.closest('button,a,.medTerm,[aria-hidden="true"]'))return NodeFilter.FILTER_REJECT;pattern.lastIndex=0;return pattern.test(node.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;}});
-const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{pattern.lastIndex=0;const value=node.nodeValue;let last=0,match;const frag=document.createDocumentFragment();while((match=pattern.exec(value))){const prefix=match[1]||'',term=match[2]||'';const termStart=match.index+prefix.length;if(termStart>last)frag.appendChild(document.createTextNode(value.slice(last,termStart)));const found=aliases.find(x=>x.alias.toLowerCase()===term.toLowerCase());if(found){const span=document.createElement('span');span.className='medTerm';span.textContent=term;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','Open definition for '+term);span.addEventListener('click',()=>openTerm(found.key));span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTerm(found.key)}});frag.appendChild(span)}else frag.appendChild(document.createTextNode(term));last=pattern.lastIndex;}if(last<value.length)frag.appendChild(document.createTextNode(value.slice(last)));node.parentNode.replaceChild(frag,node);});}
+const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);nodes.forEach(node=>{pattern.lastIndex=0;const value=node.nodeValue;let last=0,match;const frag=document.createDocumentFragment();while((match=pattern.exec(value))){const prefix=match[1]||'',term=match[2]||'';const termStart=match.index+prefix.length;if(termStart>last)frag.appendChild(document.createTextNode(value.slice(last,termStart)));const found=aliases.find(x=>normalizeTerm(x.alias)===normalizeTerm(term));if(found){const span=document.createElement('span');span.className='medTerm';span.textContent=term;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','Open definition for '+term);span.addEventListener('click',()=>openTerm(found.key));span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openTerm(found.key)}});frag.appendChild(span)}else frag.appendChild(document.createTextNode(term));last=pattern.lastIndex;}if(last<value.length)frag.appendChild(document.createTextNode(value.slice(last)));node.parentNode.replaceChild(frag,node);});}
 const popup=$('termPopup'),drag=$('termPopupDrag');let dragState=null;drag.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;const r=popup.getBoundingClientRect();dragState={x:e.clientX,y:e.clientY,left:r.left,top:r.top};popup.style.left=r.left+'px';popup.style.top=r.top+'px';popup.style.right='auto';drag.setPointerCapture(e.pointerId)});
 drag.addEventListener('pointermove',e=>{if(!dragState)return;popup.style.left=Math.max(8,Math.min(window.innerWidth-popup.offsetWidth-8,dragState.left+e.clientX-dragState.x))+'px';popup.style.top=Math.max(8,Math.min(window.innerHeight-70,dragState.top+e.clientY-dragState.y))+'px'});function stopPopupDrag(){dragState=null}drag.addEventListener('pointerup',stopPopupDrag);drag.addEventListener('pointercancel',stopPopupDrag);initFlashcards();makeMedicalTermsClickable();
 
