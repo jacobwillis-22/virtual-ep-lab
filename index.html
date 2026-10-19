@@ -37,7 +37,7 @@ button:active:not(:disabled),.tab:active,.btn:active,.answer:active:not(:disable
 :focus-visible{outline:3px solid #69adff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){button,.tab,.answer,.btn,.themeSwitch,.featureCard,.priceCard,.termCard{transition:none}button:hover,.tab:hover,.btn:hover,.answer:hover,.featureCard:hover,.priceCard:hover,.termCard:hover{transform:none}}
 /* Clickable medical vocabulary and movable definition popover */
-.medTerm{border-bottom:1px dashed #3986d7;cursor:pointer;text-decoration:none;color:inherit;transition:transform .16s ease,color .16s ease,background .16s ease;border-radius:3px}
+.medTerm{border-bottom:1px dashed #3986d7;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-decoration-color:#3986d7;text-underline-offset:3px;color:inherit;transition:transform .16s ease,color .16s ease,background .16s ease;border-radius:3px}
 .medTerm:hover{display:inline-block;transform:translateY(-1px) scale(1.025);color:#1677d2;background:#1677ff0d}
 body.dark .medTerm:hover{color:#9dccff;background:#1677ff20}
 #termPopup{position:fixed;z-index:9999;left:calc(50% - 180px);top:18%;width:min(360px,calc(100vw - 24px));max-height:min(70vh,620px);overflow:auto;border:1px solid #c9d9eb;border-radius:18px;background:#f9fcffef;color:#17243b;box-shadow:0 22px 70px #07182e35;backdrop-filter:blur(24px);display:none}
@@ -295,7 +295,12 @@ function addRequestedDictionaryTerms(){
  const grid=document.getElementById('glossaryGrid');if(!grid)return;
  const existing=new Set([...grid.querySelectorAll('.termCard h3')].map(h=>normalizeTerm(h.textContent.replace(/\s*\([^)]*\)/g,''))));
  requestedMedicalTerms.forEach(term=>{
-   if(existing.has(normalizeTerm(term)))return;
+   const exact=normalizeTerm(term),base=normalizeTerm(term.replace(/\s*\([^)]*\)/g,''));
+   if(existing.has(exact)||existing.has(base)){
+     const matchCard=[...grid.querySelectorAll('.termCard')].find(c=>normalizeTerm(c.querySelector('h3')?.textContent.replace(/\s*\([^)]*\)/g,''))===base);
+     if(matchCard&&term.includes('(')&&!matchCard.querySelector('h3').textContent.includes('('))matchCard.querySelector('h3').textContent=term;
+     existing.add(exact);return;
+   }
    const group=groupForTerm(term),def=makeTermDefinition(term);
    const card=document.createElement('article');card.className='termCard';card.dataset.terms=normalizeTerm(term)+' '+normalizeTerm(group);
    const g=document.createElement('div');g.className='termGroup';g.textContent=group;
