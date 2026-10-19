@@ -504,14 +504,19 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
      const dir=partCenter.clone().sub(center);
      if(dir.lengthSq()<.01)dir.set((i%2?1:-1),i%3===0?1:-.5,(i%4?1:-1));
      dir.normalize();
-     const xSide=Math.abs(partCenter.x-center.x)<.03?(i%2?1:-1):Math.sign(partCenter.x-center.x);
-     o.position.copy(o.userData.explodeOrigin).add(new THREE.Vector3(xSide*4.5,dir.y*.35,dir.z*.25));
+     // Move each anatomical mesh away from the shared heart center in 3D.
+     // Keep a slight horizontal emphasis while limiting vertical/depth drift.
+     dir.x *= 1.35;
+     dir.y *= .9;
+     dir.z *= .9;
+     dir.normalize();
+     o.position.copy(o.userData.explodeOrigin).addScaledVector(dir,1.75+(i%3)*.18);
     }else o.position.copy(o.userData.explodeOrigin);
    });
    $('heartViewStatus').textContent=show?'Exploded anatomy · individual anatomical meshes separated':'Anatomical model · drag, zoom, select';
    showRoute(activeRoute);
    if(conductionVisible)setConduction(true);
-   if(show){camera.position.add(new THREE.Vector3(0,0,.45));controls.update()}
+   if(show){camera.position.add(new THREE.Vector3(0,0,1.25));controls.update()}
    selectPart(selected,false,false);
   }else if(fallbackRoot){
    fallbackRoot.children.forEach((o,i)=>{
