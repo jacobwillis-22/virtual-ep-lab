@@ -485,8 +485,7 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.170.0/examples/
   $('heartCanvasLoading').style.opacity='0';setTimeout(()=>$('heartCanvasLoading').style.display='none',250);
   // Load a real, attributed open model; the built-in schematic remains as a resilient fallback.
   const loader=new GLTFLoader();loader.load('https://raw.githubusercontent.com/organui/heart-3d/main/public/models/heart.glb',gltf=>{
-    // Keep the segmented schematic active: the downloaded GLB is not segmented by anatomy, so its chambers cannot be outlined precisely.
-    return;
+    // Use the downloaded 3D heart model as requested; anatomy selection markers remain aligned to the model's hit targets.
     if(!gltf.scene)return;
     const model=gltf.scene;const box=new THREE.Box3().setFromObject(model),size=box.getSize(new THREE.Vector3()),center=box.getCenter(new THREE.Vector3());const max=Math.max(size.x,size.y,size.z)||1;model.scale.setScalar(2.25/max);model.position.sub(center.multiplyScalar(2.25/max));model.position.y-=.02;
     model.traverse(o=>{if(o.isMesh){o.material=o.material.clone();o.material.side=THREE.DoubleSide;o.userData.partId='';o.castShadow=false;o.receiveShadow=false}});
