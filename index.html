@@ -452,21 +452,70 @@ function makeSimpleTermDefinition(term){
  if(/score|cha₂ds₂|has.?bled/.test(t))return 'A clinical scoring tool that helps organize risk factors; it does not replace a clinician’s judgment.';
  return 'A cardiac or electrophysiology term. Use the medical explanation below for its specific role; the meaning may depend on the clinical context.';
 }
+function makeTermAnalogy(term){
+ const t=term.toLowerCase();
+ const exact={
+ 'atrium (plural: atria)':'Think of the atria as the heart’s two receiving rooms: they collect blood before it moves into the ventricles.',
+ 'ventricle':'Think of each ventricle as a pump that pushes blood onward—one toward the lungs and one toward the rest of the body.',
+ 'sinoatrial (sa) node':'Think of the SA node as the heart’s natural timekeeper that starts each beat.',
+ 'atrioventricular (av) node':'Think of the AV node as a small checkpoint that briefly slows the electrical message before it reaches the ventricles.',
+ 'bundle of his':'Think of the Bundle of His as a main electrical cable carrying the signal from the AV node toward the ventricles.',
+ 'electrocardiogram (ecg/ekg)':'Think of an ECG as a recording of the heart’s electrical footprints over time—not a direct video of the heart moving.',
+ 'qrs complex':'On an ECG, the QRS complex is like the signal showing that the ventricles are being electrically switched on.',
+ 'reentry':'Imagine an electrical signal caught going around a track again and again instead of stopping after one pass.',
+ 'accessory pathway':'Imagine a shortcut road connecting two places that normally communicate through a particular route; the extra route can change how signals travel.',
+ 'ablation':'Think of ablation as carefully switching off a tiny trouble spot that is helping an abnormal rhythm continue.',
+ 'pacemaker':'Think of a pacemaker as a backup timekeeper that can send a pulse when the heart needs help keeping its rhythm.',
+ 'electrogram (egm)':'Think of an electrogram as a close-up microphone recording electrical activity near the electrode, while an ECG is more like a view from outside the body.',
+ 'fractional flow reserve (ffr)':'Think of FFR as a pressure-based stress check for a narrowed coronary artery: it helps show whether the narrowing meaningfully limits flow.',
+ 'pulmonary vein isolation (pvi)':'Think of PVI as placing an electrical fence around the pulmonary vein connections so unwanted signals are less able to enter the left atrium.',
+ 'refractory period':'Think of it like a brief reset period after a button is pressed, when the system is not ready to respond normally to another press.',
+ 'capture':'Think of capture as a successful knock: the pacing pulse arrives and the heart tissue responds by activating.'
+ };
+ if(exact[t])return exact[t];
+ if(/score|risk score/.test(t))return 'Think of this as a structured checklist that combines selected factors into a score. It supports, but does not replace, clinical judgment.';
+ if(/interval|segment|wave|complex|lead/.test(t))return 'Think of this as one labeled part of a longer electrical timeline. Its shape, timing, and relationship to other parts help clinicians interpret the tracing.';
+ if(/mapping/.test(t))return 'Think of mapping as building an electrical map, similar to marking where signals start and which routes they follow.';
+ if(/catheter/.test(t))return 'Think of a catheter as a flexible, steerable tube that gives clinicians a route to reach a target area.';
+ if(/ablation|cryoablation/.test(t))return 'Think of this as targeting a small trouble spot in an electrical circuit so it is less able to sustain the abnormal rhythm.';
+ if(/pacemaker|defibrillator|recorder|device|generator/.test(t))return 'Think of this device as a monitor or helper for the heart’s electrical system; the exact job depends on the device.';
+ if(/block/.test(t))return 'Think of an electrical block like a message being delayed or stopped along a communication line.';
+ if(/tachycardia|fibrillation|flutter|arrhythmia|dysrhythmia/.test(t))return 'Think of the heart’s electrical system as a coordinated rhythm. In this condition, the signal follows an unusual pattern; the exact pattern depends on the rhythm type.';
+ if(/conduction|activation|impulse|bundle|node|purkinje|junction/.test(t))return 'Think of the heart’s electrical system as wiring that carries a signal from one area to another.';
+ if(/vein|artery|atrium|ventricle|myocard|septum|valve|aorta|pulmonary/.test(t))return 'Think of this as one part of the heart’s plumbing or structure. Its location helps explain what it does and how it relates to nearby structures.';
+ return 'Analogy: imagine the heart as a coordinated electrical system. This term names one part, signal, measurement, condition, or tool within that system. The comparison is only a learning aid; real physiology can be more complex.';
+}
 function enrichDictionaryCards(){
  const grid=document.getElementById('glossaryGrid');if(!grid)return;
  grid.querySelectorAll('.termCard').forEach(card=>{
   const h=card.querySelector('h3');if(!h)return;
-  const term=h.textContent.trim(),simple=makeSimpleTermDefinition(term),clinical=makeTermDefinition(term);
+  const term=h.textContent.trim(),simple=makeSimpleTermDefinition(term),clinical=makeTermDefinition(term),analogy=makeTermAnalogy(term);
   const p=card.querySelector('.simpleDef');if(p){p.textContent=simple;p.dataset.label='In simple words';}
   let details=card.querySelector('details');
   if(!details){details=document.createElement('details');card.append(details);}
-  let summary=details.querySelector('summary');if(!summary){summary=document.createElement('summary');details.append(summary);}
-  summary.textContent='Medical meaning & more detail';
-  let body=details.querySelector('.clinicalDef');if(!body){body=document.createElement('p');body.className='clinicalDef';details.prepend(body);}
-  body.textContent=clinical+' This is educational information, not a diagnosis or treatment recommendation.';
-  let source=details.querySelector('.sourceNote');if(!source){source=document.createElement('p');source.className='sourceNote';source.textContent='Reference framework: American Heart Association, NHLBI/NIH, and MedlinePlus. Definitions are simplified educational summaries; specialized terms should be checked against current specialty references.';details.append(source);}
+  const oldSummary=details.querySelector('summary');if(oldSummary)oldSummary.textContent='Medical meaning, analogy & more detail';
+  else{const summary=document.createElement('summary');summary.textContent='Medical meaning, analogy & more detail';details.prepend(summary);}
+  // Preserve original, term-specific explanatory paragraphs, but discard the old generic fallback text.
+  const oldParagraphs=[...details.querySelectorAll('p')].filter(el=>!el.classList.contains('clinicalDef')&&!el.classList.contains('analogyDef')&&!el.classList.contains('sourceNote'));
+  const preserved=oldParagraphs.filter(el=>{
+   const txt=el.textContent.trim();
+   return txt && !txt.includes('This entry is for learning terminology only') &&
+     !txt.includes('is a term you may encounter in cardiac electrophysiology.') &&
+     txt!==clinical && txt!==simple;
+  }).map(el=>el.cloneNode(true));
+  details.replaceChildren(details.querySelector('summary'));
+  const simpleHead=document.createElement('h4');simpleHead.textContent='In simple words';
+  const simpleText=document.createElement('p');simpleText.textContent=simple;
+  const analogyHead=document.createElement('h4');analogyHead.textContent='Analogy to help you understand';
+  const analogyText=document.createElement('p');analogyText.className='analogyDef';analogyText.textContent=analogy;
+  const medicalHead=document.createElement('h4');medicalHead.textContent='Medical meaning';
+  const medicalText=document.createElement('p');medicalText.className='clinicalDef';medicalText.textContent=clinical;
+  details.append(simpleHead,simpleText,analogyHead,analogyText,medicalHead,medicalText);
+  if(preserved.length){const extraHead=document.createElement('h4');extraHead.textContent='Additional explanation';details.append(extraHead,...preserved);}
+  const source=document.createElement('p');source.className='sourceNote';source.textContent='Study aid only, not medical advice. Use the linked medical references as a starting point; specialized terminology should be verified against topic-specific clinical sources.';details.append(source);
  });
 }
+
 function addRequestedDictionaryTerms(){
  const grid=document.getElementById('glossaryGrid');if(!grid)return;
  const existing=new Set([...grid.querySelectorAll('.termCard h3')].map(h=>normalizeTerm(h.textContent.replace(/\s*\([^)]*\)/g,''))));
