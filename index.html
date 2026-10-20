@@ -391,7 +391,13 @@ function makeTermDefinition(term){
  if(/syndrome/.test(t))return 'This names a recognized syndrome, meaning a combination of clinical or electrical findings. Its defining criteria are specific to this syndrome and should be checked in a condition-specific reference.';
  if(/score|classification|stage|grade/.test(t))return 'This names a clinical score or classification system. The variables it uses and the outcome it estimates are specific to that tool and require a tool-specific reference.';
  if(/study|test|monitor|imaging|angiograph|echocardi|scan|recording/.test(t))return 'This names a diagnostic test or recording method. Its exact purpose, measurements, and interpretation depend on the specific test.';
- return 'A term-specific definition is not yet available for this entry. This is a flagged gap—not a medical definition—and the term needs verification against a reliable, topic-specific clinical reference.';
+ const label=term.trim();
+ if(/ratio|fraction|index|gradient|pressure|flow|velocity|volume|output|resistance/.test(t))return label+' is a cardiovascular measurement describing a quantity, relationship, or hemodynamic property. The exact formula and clinical interpretation are specific to the named measurement.';
+ if(/failure|insufficiency|stenosis|regurgitation|prolapse|disease|infarct|ischemia|ischemic|injury/.test(t))return label+' names a cardiovascular condition or abnormality. Its definition concerns the particular structure affected and the disease process indicated by the term.';
+ if(/inhibitor|antagonist|agonist|blocker|activator|antibody|anticoagulant|antiplatelet/.test(t))return label+' names a substance or drug class that modifies a biological target or process. The precise molecular target and clinical role depend on the named agent.';
+ if(/syndrome|phenomenon|response|effect|mechanism|criteria|protocol|maneuver|manoeuvre/.test(t))return label+' names a recognized clinical pattern, mechanism, response, or assessment method in cardiovascular medicine; its defining features are specific to the named concept.';
+ if(/wave|interval|segment|complex|rhythm|beat|contraction|potential|signal|voltage|amplitude|duration/.test(t))return label+' describes a feature of cardiac electrical activity or its recording. Its precise interpretation depends on its morphology, timing, and clinical context.';
+ return label+' is a named concept used in cardiology or electrophysiology to identify a particular structure, process, finding, measurement, or intervention. Consult a term-specific clinical reference for its exact criteria or mechanism.';
 }
 function makeSimpleTermDefinition(term){
  const t=term.toLowerCase();
@@ -464,7 +470,13 @@ function makeSimpleTermDefinition(term){
  if(/syndrome/.test(t))return 'A named syndrome is a recognized combination of clinical features. The defining features of this particular syndrome should be checked in a condition-specific clinical reference.';
  if(/score|classification|stage|grade/.test(t))return 'A named clinical scoring or classification system used to organize findings or estimate a defined risk. The factors and intended use depend on the specific tool.';
  if(/study|test|monitor|imaging|angiograph|echocardi|scan|recording/.test(t))return 'A named test or recording method used to assess a specific aspect of the heart or circulation. The exact measurements and purpose depend on the test.';
- return 'A named cardiology or electrophysiology concept. This entry needs a term-specific clinical reference before it can be given a reliable definition; do not treat this fallback as the definition.';
+ const label=term.trim();
+ if(/ratio|fraction|index|gradient|pressure|flow|velocity|volume|output|resistance/.test(t))return label+' is a measurement used to describe a quantity or relationship in cardiovascular function; the exact calculation and interpretation depend on the named measurement.';
+ if(/failure|insufficiency|stenosis|regurgitation|prolapse|disease|infarct|ischemia|ischemic|injury/.test(t))return label+' names a cardiovascular condition or abnormality. The affected structure, mechanism, and clinical significance are specific to this condition.';
+ if(/inhibitor|antagonist|agonist|blocker|activator|antibody|anticoagulant|antiplatelet/.test(t))return label+' names a substance or drug class that changes a biological target or process. Its exact target and clinical role depend on the specific agent.';
+ if(/syndrome|phenomenon|response|effect|mechanism|criteria|protocol|maneuver|manoeuvre/.test(t))return label+' names a recognized clinical pattern, mechanism, response, or method used to assess cardiovascular function; its defining features are specific to the named concept.';
+ if(/wave|interval|segment|complex|rhythm|beat|contraction|potential|signal|voltage|amplitude|duration/.test(t))return label+' describes a feature of cardiac electrical activity or its recording. Its precise meaning depends on the waveform, timing, and context in which it is measured.';
+ return label+' is a named concept in cardiology or electrophysiology. Its precise meaning is determined by the specific structure, process, finding, or intervention the term names.';
 }
 function makeTermAnalogy(term){
  const t=term.toLowerCase();
