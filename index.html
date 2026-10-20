@@ -316,6 +316,7 @@ function groupForTerm(term){
 function makeTermDefinition(term){
  const t=term.toLowerCase();
  const known={
+ 'abciximab':'Abciximab is an antiplatelet medicine that blocks the platelet glycoprotein IIb/IIIa receptor. This prevents platelets from clumping together and has been used to reduce clot-related complications during selected percutaneous coronary interventions.',
  'ablation':'A procedure that destroys or isolates a small area of tissue responsible for an abnormal electrical rhythm.',
  'ablation catheter':'A catheter designed to deliver energy to targeted tissue during an ablation procedure.',
  'accessory pathway':'An extra electrical connection between the atria and ventricles that can allow conduction outside the normal AV pathway.',
@@ -384,11 +385,18 @@ function makeTermDefinition(term){
  if(/cardioversion/.test(t))return 'A treatment intended to restore a more normal rhythm, using electrical energy or medication depending on the situation.';
  if(/activation|depolarization|repolarization|action potential/.test(t))return 'A concept describing how cardiac cells generate or recover from the electrical signal that coordinates each heartbeat.';
  if(/syndrome/.test(t))return 'A recognized combination of clinical or electrical findings. Diagnosis and management require professional medical assessment.';
- return 'A cardiac electrophysiology term used to describe a rhythm, structure, measurement, device, medication, or procedure. Its significance depends on the full clinical context.';
+ if(/^[a-z][a-z0-9 -]*(mab|ximab|cimab|zumab|umab|tinib|pril|sartan|olol|dipine|parin|xaban|grel|fiban|statin|caine|ide|one)$/.test(t))return 'This is a medication name. Its drug-specific target, mechanism, indications, and risks must be checked in a dedicated pharmacology reference; do not infer those details from the name alone.';
+ if(/antiplatelet|platelet|glycoprotein|thrombin|coagulation|clotting|anticoagulant/.test(t))return 'This term concerns platelet activity or the blood-clotting process. The specific mechanism depends on the named drug, receptor, factor, or process.';
+ if(/artery|vein|atrium|ventricle|septum|valve|bundle|node|purkinje|myocard|pericard|aorta|pulmonary/.test(t))return 'This names an anatomical structure or blood vessel. Its precise location and function should be interpreted from the anatomy named by the term.';
+ if(/syndrome/.test(t))return 'This names a recognized syndrome, meaning a combination of clinical or electrical findings. Its defining criteria are specific to this syndrome and should be checked in a condition-specific reference.';
+ if(/score|classification|stage|grade/.test(t))return 'This names a clinical score or classification system. The variables it uses and the outcome it estimates are specific to that tool and require a tool-specific reference.';
+ if(/study|test|monitor|imaging|angiograph|echocardi|scan|recording/.test(t))return 'This names a diagnostic test or recording method. Its exact purpose, measurements, and interpretation depend on the specific test.';
+ return 'A term-specific definition is not yet available for this entry. This is a flagged gap—not a medical definition—and the term needs verification against a reliable, topic-specific clinical reference.';
 }
 function makeSimpleTermDefinition(term){
  const t=term.toLowerCase();
  const exact={
+ 'abciximab':'A medicine that blocks the platelet GP IIb/IIIa receptor, making platelets less likely to clump together during certain high-risk coronary procedures.',
  'electrophysiology (ep)':'The study of how the heart’s electrical system works.',
  'electrophysiology study (eps)':'A test where doctors place thin tubes in the heart to record its electrical signals and investigate abnormal rhythms.',
  'atrial fibrillation (af/afib)':'A rhythm where the top chambers of the heart have disorganized electrical activity and may beat irregularly.',
@@ -450,7 +458,13 @@ function makeSimpleTermDefinition(term){
  if(/vein|artery|atrium|ventricle|myocard|septum|valve|aorta|pulmonary/.test(t))return 'A heart structure or blood vessel. Its exact location and role are important to understanding cardiac anatomy.';
  if(/study|test|monitor|imaging|angiograph|echocardi|scan/.test(t))return 'A test or monitoring method used to gather information about the heart, its electrical activity, or blood flow.';
  if(/score|cha₂ds₂|has.?bled/.test(t))return 'A clinical scoring tool that helps organize risk factors; it does not replace a clinician’s judgment.';
- return 'A cardiac or electrophysiology term. Use the medical explanation below for its specific role; the meaning may depend on the clinical context.';
+ if(/^[a-z][a-z0-9 -]*(mab|ximab|cimab|zumab|umab|tinib|pril|sartan|olol|dipine|parin|xaban|grel|fiban|statin|caine|ide|one)$/.test(t))return 'A medication used to affect a specific biological target or body process. Its exact target and clinical use should be checked in a drug-specific reference before relying on this definition.';
+ if(/antiplatelet|platelet|glycoprotein|thrombin|coagulation|clotting|anticoagulant/.test(t))return 'A term related to blood clot formation or medicines that reduce clotting. The exact mechanism depends on the named substance or process.';
+ if(/artery|vein|atrium|ventricle|septum|valve|bundle|node|purkinje|myocard|pericard|aorta|pulmonary/.test(t))return 'A named heart structure or blood vessel; its location and connection to nearby structures determine its specific role.';
+ if(/syndrome/.test(t))return 'A named syndrome is a recognized combination of clinical features. The defining features of this particular syndrome should be checked in a condition-specific clinical reference.';
+ if(/score|classification|stage|grade/.test(t))return 'A named clinical scoring or classification system used to organize findings or estimate a defined risk. The factors and intended use depend on the specific tool.';
+ if(/study|test|monitor|imaging|angiograph|echocardi|scan|recording/.test(t))return 'A named test or recording method used to assess a specific aspect of the heart or circulation. The exact measurements and purpose depend on the test.';
+ return 'A named cardiology or electrophysiology concept. This entry needs a term-specific clinical reference before it can be given a reliable definition; do not treat this fallback as the definition.';
 }
 function makeTermAnalogy(term){
  const t=term.toLowerCase();
