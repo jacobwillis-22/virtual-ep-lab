@@ -177,7 +177,7 @@ body.dark #heartCanvasWrap{background:radial-gradient(ellipse at 50% 44%,#263b53
 <section class="page" id="page-glossary">
 <header class="pageHero"><div class="eyebrow">Plain-language medical dictionary</div><h1>Understand the <span>words.</span></h1><p class="sub">Look up cardiac and electrophysiology terms with simple definitions, detailed explanations, and why each concept matters in learning.</p></header>
 <section class="flashStudy" aria-labelledby="flashTitle"><div class="flashTop"><div><div class="eyebrow">ACTIVE RECALL · STUDY DECK</div><h2 id="flashTitle">EP flashcards</h2><p>Choose a group, study the term, then click the card to flip it for the definition and breakdown. Each card shows the module(s) where the term appears.</p></div><span class="pill" id="flashTotal">A–Z · all dictionary terms</span></div><div class="flashControls"><label for="flashGroup" class="eyebrow">CARD GROUP</label><select id="flashGroup" aria-label="Choose flashcard group"><option value="all">All groups</option></select></div><button type="button" class="flashCard" id="flashCard" aria-label="Flip flashcard to reveal definition"><span class="flashInner"><span class="flashFace flashFront"><span class="flashLabel" id="flashCategory">HEART ANATOMY</span><h3 id="flashTerm">Loading term…</h3><div class="flashModules" id="flashModules"></div><p>Click to reveal the definition and breakdown</p></span><span class="flashFace flashBack"><span class="flashLabel">ANSWER · DEFINITION & BREAKDOWN</span><h3 id="flashTermBack">Term</h3><h4>Definition</h4><p class="flashDetail" id="flashDefinition"></p><h4>Term breakdown</h4><div class="flashDetail" id="flashBreakdown"></div><div class="flashModules" id="flashModulesBack"></div></span></span></button><div class="flashFoot"><small id="flashCount">Card 1 of 58</small><div class="flashProgress"><span id="flashProgressFill"></span></div><div class="flashBtns"><button type="button" class="flashBtn" id="flashShuffle">Shuffle</button><button type="button" class="flashBtn" id="flashPrev">Previous</button><button type="button" class="flashBtn primary" id="flashNext">Next card →</button></div></div></section>
-<div class="glossarySearch"><input id="termSearch" type="search" placeholder="Search a term, like atrium, depolarization, or ECG…" aria-label="Search medical terms"><span id="termCount">A–Z terms</span></div>
+<div class="notice" role="note"><strong>How to use this dictionary</strong><p><b>In simple words:</b> a quick explanation for learning and review. Open <b>Medical meaning &amp; more detail</b> for a more technical description. These are study aids, not medical advice. Definitions are being organized using reliable patient and professional references, including the <a href="https://www.heart.org/en/health-topics/arrhythmia" target="_blank" rel="noopener">American Heart Association</a>, <a href="https://www.nhlbi.nih.gov/health/arrhythmias" target="_blank" rel="noopener">NHLBI/NIH</a>, and <a href="https://medlineplus.gov/" target="_blank" rel="noopener">MedlinePlus</a>. Specialized procedure, device, medication, and scoring terms still require topic-specific verification.</p></div><div class="glossarySearch"><input id="termSearch" type="search" placeholder="Search a term, like atrium, depolarization, or ECG…" aria-label="Search medical terms"><span id="termCount">A–Z terms</span></div>
 <div class="glossaryGrid" id="glossaryGrid">
 <article class="termCard" data-terms="atrium atria atrial chamber"><div class="termGroup">HEART ANATOMY</div><h3>Atrium (plural: atria)</h3><p class="simpleDef">One of the heart’s two upper chambers.</p><details><summary>Explain it in more detail</summary><p>The right atrium receives blood returning from the body. The left atrium receives blood returning from the lungs. Both upper chambers help move blood into the lower chambers, called ventricles.</p><p><b>Why it matters in EP:</b> Electrical activity can begin in or travel through atrial tissue. A surface ECG may show atrial activity as P waves, although real recordings can be more complicated than a teaching diagram.</p><p><b>Remember:</b> Atrium = upper receiving chamber.</p></details></article>
 <article class="termCard" data-terms="ventricle ventricles ventricular chamber"><div class="termGroup">HEART ANATOMY</div><h3>Ventricle</h3><p class="simpleDef">One of the heart’s two lower pumping chambers.</p><details><summary>Explain it in more detail</summary><p>The right ventricle pumps blood toward the lungs. The left ventricle pumps blood out to the body. Their muscular walls contract to push blood forward.</p><p><b>Why it matters in EP:</b> The QRS complex on a typical surface ECG mainly represents the electrical activation of the ventricles. It is an electrical event, not a direct picture of the squeezing motion itself.</p><p><b>Remember:</b> Ventricle = lower pumping chamber.</p></details></article>
@@ -386,6 +386,87 @@ function makeTermDefinition(term){
  if(/syndrome/.test(t))return 'A recognized combination of clinical or electrical findings. Diagnosis and management require professional medical assessment.';
  return 'A cardiac electrophysiology term used to describe a rhythm, structure, measurement, device, medication, or procedure. Its significance depends on the full clinical context.';
 }
+function makeSimpleTermDefinition(term){
+ const t=term.toLowerCase();
+ const exact={
+ 'electrophysiology (ep)':'The study of how the heart’s electrical system works.',
+ 'electrophysiology study (eps)':'A test where doctors place thin tubes in the heart to record its electrical signals and investigate abnormal rhythms.',
+ 'atrial fibrillation (af/afib)':'A rhythm where the top chambers of the heart have disorganized electrical activity and may beat irregularly.',
+ 'atrial flutter (afl)':'A fast rhythm caused by an electrical signal repeatedly traveling around a loop in the upper chambers.',
+ 'ventricular tachycardia (vt)':'A fast rhythm that starts in the heart’s lower chambers. It can be dangerous and needs prompt medical assessment.',
+ 'supraventricular tachycardia (svt)':'A group of fast heart rhythms that start above the heart’s lower chambers.',
+ 'atrioventricular nodal reentrant tachycardia (avnrt)':'A fast heartbeat caused by an electrical signal looping near the AV node.',
+ 'atrioventricular reentrant tachycardia (avrt)':'A fast rhythm that uses an extra electrical connection in the heart.',
+ 'accessory pathway':'An extra electrical route that connects parts of the heart that are usually connected through the normal pathway.',
+ 'ablation':'A procedure that uses energy or cold to stop a small area of heart tissue from causing an abnormal rhythm.',
+ 'pulmonary vein isolation (pvi)':'A procedure that blocks abnormal electrical signals from traveling between the pulmonary veins and the left upper heart chamber.',
+ 'electrocardiogram (ecg/ekg)':'A test that records the heart’s electrical activity using stickers on the skin.',
+ 'electrogram (egm)':'A recording of electrical signals picked up by an electrode near or inside the heart.',
+ 'qrs complex':'The main ECG wave that shows the electrical activation of the heart’s lower chambers.',
+ 'qt interval':'An ECG measurement covering the electrical activation and recovery of the lower heart chambers.',
+ 'reentry':'When an electrical signal keeps traveling around a loop and repeatedly activates heart tissue.',
+ 'refractory period':'A short time when heart tissue cannot be activated again normally.',
+ 'capture':'When a pacing pulse successfully makes heart tissue activate.',
+ 'adenosine':'A medicine that briefly slows electrical conduction through the AV node; clinicians use it for certain rhythm problems and tests.',
+ 'cardioversion':'A treatment that uses a controlled electrical shock or medicine to help restore a more normal heart rhythm.',
+ 'pacemaker':'A device that sends electrical pulses to help the heart beat when its own rhythm is too slow or otherwise needs support.',
+ 'implantable cardioverter-defibrillator (icd)':'A device that watches for certain dangerous heart rhythms and can deliver treatment, including a shock.',
+ 'ejection fraction (ef)':'The percentage of blood a ventricle pumps out each time it squeezes.',
+ 'ischemia':'When part of the body, such as the heart muscle, does not get enough blood and oxygen.',
+ 'myocardial infarction (mi)':'A heart attack, where part of the heart muscle is damaged because its blood supply is blocked or severely reduced.',
+ 'syncope':'Fainting or briefly passing out.',
+ 'bradycardia':'A slower-than-usual heart rate; whether it is a problem depends on the situation.',
+ 'tachycardia':'A faster-than-usual heart rate; the cause and risk depend on the rhythm and situation.',
+ 'sinus rhythm':'A heartbeat that starts from the heart’s natural electrical pacemaker, the SA node.',
+ 'depolarization':'The electrical change that activates a heart cell.',
+ 'repolarization':'The electrical recovery phase after a heart cell has been activated.',
+ 'action potential':'The brief electrical change a heart cell goes through when it activates.',
+ 'conduction':'The way an electrical signal travels through the heart.',
+ 'atrioventricular (av) node':'A small area of electrical tissue that passes signals from the upper chambers toward the lower chambers and slows them briefly.',
+ 'sinoatrial (sa) node':'The heart’s natural pacemaker; it normally starts each heartbeat.',
+ 'bundle of his':'A pathway that carries the heart’s electrical signal from the AV node toward the lower chambers.',
+ 'activated clotting time (act)':'A blood test used during some procedures to check how long blood takes to clot.',
+ 'fractional flow reserve (ffr)':'A measurement made during coronary procedures to estimate whether a narrowing is limiting blood flow to the heart muscle.',
+ 'intravascular ultrasound (ivus)':'A test that uses a tiny ultrasound probe inside a blood vessel to show its inside wall.',
+ 'optical coherence tomography (oct)':'A catheter-based imaging test that uses light to create detailed pictures inside a blood vessel.',
+ 'pulsed field ablation':'An ablation method that uses brief electrical pulses to target heart tissue responsible for an abnormal rhythm.',
+ 'transseptal puncture':'A procedure where a doctor makes a controlled passage through the wall between the two upper heart chambers to reach the left side of the heart.',
+ 'left atrial appendage occlusion (laao)':'A procedure that closes off a small pouch in the left upper heart chamber to help reduce clot-related stroke risk in selected patients.',
+ 'cardiac resynchronization therapy (crt)':'A treatment that coordinates the timing of the heart’s lower chambers using a special pacing device.'
+ };
+ if(exact[t])return exact[t];
+ if(/^(ecg|ekg|electrocardiogram)/.test(t))return 'A test or tracing that shows the heart’s electrical activity over time.';
+ if(/interval|segment|wave|complex|lead/.test(t))return 'A named part or measurement on an ECG that helps describe the heart’s electrical pattern.';
+ if(/catheter/.test(t))return 'A thin, flexible tube used to reach the heart or blood vessels during a test or procedure.';
+ if(/mapping/.test(t))return 'A way to build a picture of where electrical signals travel or begin in the heart.';
+ if(/ablation|cryoablation/.test(t))return 'A procedure that targets a small area of tissue to stop it from causing an abnormal electrical rhythm.';
+ if(/pacemaker|defibrillator|recorder|device|generator/.test(t))return 'A device that monitors heart rhythm or delivers electrical treatment; the exact job depends on the device.';
+ if(/block/.test(t))return 'A problem where the heart’s electrical signal is delayed or cannot pass normally through a pathway.';
+ if(/tachycardia|fibrillation|flutter|arrhythmia|dysrhythmia/.test(t))return 'A type of abnormal heart rhythm. The exact meaning depends on where it starts and how the electrical signal travels.';
+ if(/electrolyte|hyperkalemia|hypokalemia|hypomagnesemia/.test(t))return 'A blood-salt or mineral level issue that can affect how the heart’s electrical system works.';
+ if(/score|classification|stage|grade/.test(t))return 'A tool or label used to group findings or estimate something specific; its use depends on the clinical context.';
+ if(/syndrome/.test(t))return 'A recognized group of findings that tend to occur together.';
+ if(/medication|drug|adenosine|sotalol|amiodarone|disopyramide|lidocaine|flecainide|procainamide|dofetilide|ibutilide|metoprolol/.test(t))return 'A medicine used for a particular purpose. Its effects, risks, and appropriate use depend on the patient and clinical situation.';
+ if(/vein|artery|atrium|ventricle|myocard|septum|valve|aorta|pulmonary/.test(t))return 'A heart structure or blood vessel. Its exact location and role are important to understanding cardiac anatomy.';
+ if(/study|test|monitor|imaging|angiograph|echocardi|scan/.test(t))return 'A test or monitoring method used to gather information about the heart, its electrical activity, or blood flow.';
+ if(/score|cha₂ds₂|has.?bled/.test(t))return 'A clinical scoring tool that helps organize risk factors; it does not replace a clinician’s judgment.';
+ return 'A cardiac or electrophysiology term. Use the medical explanation below for its specific role; the meaning may depend on the clinical context.';
+}
+function enrichDictionaryCards(){
+ const grid=document.getElementById('glossaryGrid');if(!grid)return;
+ grid.querySelectorAll('.termCard').forEach(card=>{
+  const h=card.querySelector('h3');if(!h)return;
+  const term=h.textContent.trim(),simple=makeSimpleTermDefinition(term),clinical=makeTermDefinition(term);
+  const p=card.querySelector('.simpleDef');if(p){p.textContent=simple;p.dataset.label='In simple words';}
+  let details=card.querySelector('details');
+  if(!details){details=document.createElement('details');card.append(details);}
+  let summary=details.querySelector('summary');if(!summary){summary=document.createElement('summary');details.append(summary);}
+  summary.textContent='Medical meaning & more detail';
+  let body=details.querySelector('.clinicalDef');if(!body){body=document.createElement('p');body.className='clinicalDef';details.prepend(body);}
+  body.textContent=clinical+' This is educational information, not a diagnosis or treatment recommendation.';
+  let source=details.querySelector('.sourceNote');if(!source){source=document.createElement('p');source.className='sourceNote';source.textContent='Reference framework: American Heart Association, NHLBI/NIH, and MedlinePlus. Definitions are simplified educational summaries; specialized terms should be checked against current specialty references.';details.append(source);}
+ });
+}
 function addRequestedDictionaryTerms(){
  const grid=document.getElementById('glossaryGrid');if(!grid)return;
  const existing=new Set([...grid.querySelectorAll('.termCard h3')].map(h=>normalizeTerm(h.textContent.replace(/\s*\([^)]*\)/g,''))));
@@ -413,6 +494,7 @@ function addRequestedDictionaryTerms(){
  const total=document.getElementById('flashTotal');if(total)total.textContent=cards.length+' cards · A–Z';
 }
 addRequestedDictionaryTerms();
+enrichDictionaryCards();
 const dictionaryTerms={};
 document.querySelectorAll('#glossaryGrid .termCard').forEach(card=>{const title=card.querySelector('h3')?.textContent.trim()||'Medical term';const simple=card.querySelector('.simpleDef')?.textContent.trim()||'';const details=card.querySelector('details');dictionaryTerms[title.toLowerCase()]={title,definition:simple,breakdown:details?details.innerHTML:'<p>See the Medical Dictionary for more details.</p>'};});
 function buildVocabularyFromDictionary(){
