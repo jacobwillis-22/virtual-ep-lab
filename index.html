@@ -466,7 +466,7 @@ function makeTermsClickableWithin(root){
  }});
  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
  nodes.forEach(node=>{pattern.lastIndex=0;const value=node.nodeValue;let last=0,match;const frag=document.createDocumentFragment();
-  while((match=pattern.exec(value))){const prefix=match[1]||'',term=match[2]||'',start=match.index+prefix.length;if(start>last)frag.appendChild(document.createTextNode(value.slice(last,start));
+  while((match=pattern.exec(value))){const prefix=match[1]||'',term=match[2]||'',start=match.index+prefix.length;if(start>last)frag.appendChild(document.createTextNode(value.slice(last,start)));
    const found=aliases.find(x=>normalizeTerm(x.alias)===normalizeTerm(term));if(found){const span=document.createElement('span');span.className='medTerm';span.textContent=term;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label','Open definition for '+term);span.title='Click to view definition';span.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();openTerm(found.key)});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();openTerm(found.key)}});frag.appendChild(span)}else frag.appendChild(document.createTextNode(term));last=pattern.lastIndex;
   }if(last<value.length)frag.appendChild(document.createTextNode(value.slice(last)));node.parentNode.replaceChild(frag,node);
  });
