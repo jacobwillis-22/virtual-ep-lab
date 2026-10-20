@@ -1037,6 +1037,7 @@ const supplementalPlainDefinitions={
 function lookupDictionaryDefinition(dictionary,term){const key=term.toLowerCase();if(dictionary[key])return dictionary[key];const normalized=key.replace(/[^a-z0-9]+/g,' ').trim();for(const candidate in dictionary){if(candidate.replace(/[^a-z0-9]+/g,' ').trim()===normalized)return dictionary[candidate]}return null}
 function makeTermDefinition(term){
  const t=term.toLowerCase();
+ if(t.replace(/[^a-z0-9]/g,'')==='ahinterval')return 'The A-H interval is the measured time from atrial electrical activation to the His-bundle signal during an intracardiac electrophysiology recording. It is used to assess conduction through the AV nodal region; interpretation depends on the recording method and the rest of the study.';
  const supplementalDefinition=lookupDictionaryDefinition(supplementalClinicalDefinitions,term);if(supplementalDefinition)return supplementalDefinition;
  const known={
  'abciximab':'Abciximab is an antiplatelet medicine that blocks the platelet glycoprotein IIb/IIIa receptor. This prevents platelets from clumping together and has been used to reduce clot-related complications during selected percutaneous coronary interventions.',
@@ -1757,6 +1758,7 @@ function makeTermDefinition(term){
 }
 function makeSimpleTermDefinition(term){
  const t=term.toLowerCase();
+ if(t.replace(/[^a-z0-9]/g,'')==='ahinterval')return 'The time it takes an electrical signal to travel from the upper chambers to the His bundle.';
  const supplementalPlainDefinition=lookupDictionaryDefinition(supplementalPlainDefinitions,term);if(supplementalPlainDefinition)return supplementalPlainDefinition;
  const supplementalClinical=lookupDictionaryDefinition(supplementalClinicalDefinitions,term);if(supplementalClinical)return simplifyClinicalDefinition(supplementalClinical);
  const exact={
@@ -2398,6 +2400,7 @@ function simplifyClinicalDefinition(text){return text.replace(/cardiovascular/gi
 
 function makeTermAnalogy(term){
  const t=term.toLowerCase();
+ if(t.replace(/[^a-z0-9]/g,'')==='ahinterval')return 'Imagine timing a message as it passes through a checkpoint: the A-H interval measures the trip from atrial activation to the His-bundle signal.';
  const exact={
  'atrium (plural: atria)':'Think of the atria as the heart’s two receiving rooms: they collect blood before it moves into the ventricles.',
  'ventricle':'Think of each ventricle as a pump that pushes blood onward—one toward the lungs and one toward the rest of the body.',
@@ -2417,7 +2420,30 @@ function makeTermAnalogy(term){
  'capture':'Think of capture as a successful knock: the pacing pulse arrives and the heart tissue responds by activating.'
  };
  const exactDefinition=lookupDictionaryDefinition(exact,term);if(exactDefinition)return exactDefinition;
- return simplifyClinicalDefinition(makeTermDefinition(term))
+ if(/interval|segment|wave|complex|lead|ecg|ekg|electrogram|potential|signal|voltage|amplitude|duration/i.test(t))return 'Think of '+term+' as a marker on an electrical recording: its shape, timing, and relationship to nearby signals help explain what the heart’s electrical system is doing.';
+ if(/catheter|electrode|sheath|wire|lead|introducer/i.test(t))return 'Think of '+term+' as part of the toolkit that lets a clinician reach a target, record a signal, or deliver a controlled stimulus during a procedure.';
+ if(/ablation|isolation|lesion|cryo|radiofrequency|pulsed field/i.test(t))return 'Imagine carefully changing a small, selected area in an electrical circuit so an unwanted signal is less able to start or continue.';
+ if(/pacing|capture|threshold|stimulat|refractory|entrainment/i.test(t))return 'Think of '+term+' as a controlled test of the heart’s response to a timed electrical nudge; the response helps reveal how the tissue or pathway behaves.';
+ if(/tachycardia|fibrillation|flutter|arrhythmia|dysrhythmia|reentry|ectopic|premature|escape rhythm/i.test(t))return 'Imagine the heart’s electrical system as a route network: '+term+' describes a particular way the signal starts, speeds up, loops, or travels along an unusual route.';
+ if(/node|bundle|purkinje|atrium|atria|ventricle|septum|valve|vein|artery|myocard|aorta|pericard/i.test(t))return 'Picture the heart as a building with connected rooms and wiring: '+term+' is one specific structure whose position and connections help explain its job.';
+ if(/drug|medication|antagonist|agonist|blocker|inhibitor|antiarrhythmic|adenosine|amiodarone|sotalol|flecainide|procainamide|lidocaine/i.test(t))return 'Think of '+term+' as a tool that changes a particular body process; what it does depends on its target, dose, and clinical situation.';
+ if(/study|test|monitor|mapping|imaging|angiograph|echocardi|scan|recording/i.test(t))return 'Imagine '+term+' as a way of collecting a particular kind of evidence about the heart; the result is interpreted alongside the patient’s symptoms and other findings.';
+ if(/score|risk|classification|stage|grade|criteria/i.test(t))return 'Think of '+term+' as a structured checklist or measuring scale: it organizes specific findings for a defined purpose, rather than telling the whole story by itself.';
+ return 'Think of '+term+' as a named piece of the heart-care vocabulary. To understand it, connect the term to its specific structure, signal, mechanism, measurement, or procedure rather than memorizing the name alone.';
+}
+function makeTermAdditionalExplanation(term){
+ const t=term.toLowerCase();
+ if(t.replace(/[^a-z0-9]/g,'')==='ahinterval')return 'It is commonly used to describe conduction through the AV nodal region. The value should be interpreted with the recording setup, other intracardiac intervals, pacing findings, and the clinical question.';
+ if(/interval|segment|wave|complex|lead|ecg|ekg|electrogram|potential|signal|voltage|amplitude|duration/i.test(t))return 'When reviewing this term, identify exactly where it is measured or recorded, which events define it, and how it relates to neighboring signals. A single tracing feature should not be interpreted in isolation.';
+ if(/catheter|electrode|sheath|wire|introducer|lead/i.test(t))return 'Its role depends on its design, location, and whether it is being used to record, pace, map, deliver therapy, or provide access. Similar-looking tools may serve different purposes.';
+ if(/ablation|isolation|lesion|cryo|radiofrequency|pulsed field/i.test(t))return 'The target, energy source, surrounding anatomy, and procedural endpoint matter. The term describes a technique or result, not a guarantee that an arrhythmia will never recur.';
+ if(/pacing|capture|threshold|stimulat|refractory|entrainment/i.test(t))return 'In an EP study, timing and stimulus settings affect the response. The finding is interpreted together with the pacing site, baseline rhythm, and other maneuvers.';
+ if(/tachycardia|fibrillation|flutter|arrhythmia|dysrhythmia|reentry|ectopic|premature|escape rhythm/i.test(t))return 'The mechanism, point of origin, conduction route, and effect on circulation help distinguish this concept from other rhythms. The ECG pattern and clinical context are important.';
+ if(/node|bundle|purkinje|atrium|atria|ventricle|septum|valve|vein|artery|myocard|aorta|pericard/i.test(t))return 'Its anatomical relationships help explain how it contributes to blood flow or electrical conduction. Check a labeled anatomical reference when learning its exact position.';
+ if(/drug|medication|antagonist|agonist|blocker|inhibitor|antiarrhythmic|adenosine|amiodarone|sotalol|flecainide|procainamide|lidocaine/i.test(t))return 'The precise target, indications, contraindications, interactions, and adverse effects are agent-specific. This learning entry is not a basis for choosing or changing medication.';
+ if(/study|test|monitor|mapping|imaging|angiograph|echocardi|scan|recording/i.test(t))return 'Know what the method measures, how the data are obtained, and what limitations affect interpretation. Results are considered with other clinical information.';
+ if(/score|risk|classification|stage|grade|criteria/i.test(t))return 'Review the specific variables included and the purpose for which the tool was validated. A score or category supports clinical assessment but does not replace it.';
+ return 'The exact definition, diagnostic criteria, or procedural significance should be checked against a topic-specific cardiology or electrophysiology reference. Related terms can sound similar while describing different concepts.';
 }
 function enrichDictionaryCards(){
  const grid=document.getElementById('glossaryGrid');if(!grid)return;
@@ -2433,7 +2459,7 @@ function enrichDictionaryCards(){
   const oldParagraphs=[...details.querySelectorAll('p')].filter(el=>!el.classList.contains('clinicalDef')&&!el.classList.contains('analogyDef')&&!el.classList.contains('sourceNote'));
   const preserved=oldParagraphs.filter(el=>{
    const txt=el.textContent.trim();
-   return txt && !txt.includes('This entry is for learning terminology only') &&
+   return txt && !el.classList.contains('additionalDef') && !txt.includes('This entry is for learning terminology only') &&
      !txt.includes('is a term you may encounter in cardiac electrophysiology.') &&
      txt!==clinical && txt!==simple;
   }).map(el=>el.cloneNode(true));
@@ -2445,7 +2471,9 @@ function enrichDictionaryCards(){
   const medicalHead=document.createElement('h4');medicalHead.textContent='Medical meaning';
   const medicalText=document.createElement('p');medicalText.className='clinicalDef';medicalText.textContent=clinical;
   details.append(simpleHead,simpleText,analogyHead,analogyText,medicalHead,medicalText);
-  if(preserved.length){const extraHead=document.createElement('h4');extraHead.textContent='Additional explanation';details.append(extraHead,...preserved);}
+  const extraHead=document.createElement('h4');extraHead.textContent='Additional explanation';
+  const generatedExtra=document.createElement('p');generatedExtra.className='additionalDef';generatedExtra.textContent=makeTermAdditionalExplanation(term);
+  details.append(extraHead,generatedExtra,...preserved);
   const source=document.createElement('p');source.className='sourceNote';source.textContent='Study aid only, not medical advice. Use the linked medical references as a starting point; specialized terminology should be verified against topic-specific clinical sources.';details.append(source);
  });
 }
