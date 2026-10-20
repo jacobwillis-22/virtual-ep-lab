@@ -1034,9 +1034,10 @@ const supplementalPlainDefinitions={
  'wolff-parkinson-white (wpw) syndrome':'A condition where an extra electrical pathway can activate the lower chambers early and cause episodes of fast rhythm.',
  'zero-fluoroscopy ablation':'An ablation procedure guided without X-ray imaging.'
 };
+function lookupDictionaryDefinition(dictionary,term){const key=term.toLowerCase();if(dictionary[key])return dictionary[key];const normalized=key.replace(/[^a-z0-9]+/g,' ').trim();for(const candidate in dictionary){if(candidate.replace(/[^a-z0-9]+/g,' ').trim()===normalized)return dictionary[candidate]}return null}
 function makeTermDefinition(term){
  const t=term.toLowerCase();
- if(supplementalClinicalDefinitions[t])return supplementalClinicalDefinitions[t];
+ const supplementalDefinition=lookupDictionaryDefinition(supplementalClinicalDefinitions,term);if(supplementalDefinition)return supplementalDefinition;
  const known={
  'abciximab':'Abciximab is an antiplatelet medicine that blocks the platelet glycoprotein IIb/IIIa receptor. This prevents platelets from clumping together and has been used to reduce clot-related complications during selected percutaneous coronary interventions.',
  'ablation':'A procedure that destroys or isolates a small area of tissue responsible for an abnormal electrical rhythm.',
@@ -1729,7 +1730,7 @@ function makeTermDefinition(term){
  'hypoattenuated leaflet thickening':'Hypoattenuated leaflet thickening is a CT imaging finding of thickened prosthetic valve leaflets that may be associated with leaflet thrombosis.',
  'halt':'Hypoattenuated leaflet thickening is a CT finding of thickened replacement-valve leaflets, sometimes associated with clot formation.',
  };
- if(known[t])return known[t];
+ const knownDefinition=lookupDictionaryDefinition(known,term);if(knownDefinition)return knownDefinition;
  if(/block/.test(t))return 'A term for impaired or interrupted electrical conduction through part of the heart’s conduction system. The exact meaning depends on the location and degree of block.';
  if(/pacemaker|defibrillator|loop recorder|generator/.test(t))return 'A device or implanted system used to monitor cardiac rhythm or provide electrical therapy, depending on the device type.';
  if(/tachycardia|fibrillation|flutter|arrhythmia|dysrhythmia|bigeminy|couplet|ectopy|ectopic|escape rhythm/.test(t))return 'A cardiac rhythm term describing an abnormal rhythm pattern or its electrical origin. Clinical interpretation depends on the ECG and the patient’s context.';
@@ -1756,8 +1757,8 @@ function makeTermDefinition(term){
 }
 function makeSimpleTermDefinition(term){
  const t=term.toLowerCase();
- if(supplementalPlainDefinitions[t])return supplementalPlainDefinitions[t];
- if(supplementalClinicalDefinitions[t])return simplifyClinicalDefinition(supplementalClinicalDefinitions[t]);
+ const supplementalPlainDefinition=lookupDictionaryDefinition(supplementalPlainDefinitions,term);if(supplementalPlainDefinition)return supplementalPlainDefinition;
+ const supplementalClinical=lookupDictionaryDefinition(supplementalClinicalDefinitions,term);if(supplementalClinical)return simplifyClinicalDefinition(supplementalClinical);
  const exact={
  'abciximab':'A medicine that blocks the platelet GP IIb/IIIa receptor, making platelets less likely to clump together during certain high-risk coronary procedures.',
  'electrophysiology (ep)':'The study of how the heart’s electrical system works.',
@@ -2415,7 +2416,7 @@ function makeTermAnalogy(term){
  'refractory period':'Think of it like a brief reset period after a button is pressed, when the system is not ready to respond normally to another press.',
  'capture':'Think of capture as a successful knock: the pacing pulse arrives and the heart tissue responds by activating.'
  };
- if(exact[t])return exact[t];
+ const exactDefinition=lookupDictionaryDefinition(exact,term);if(exactDefinition)return exactDefinition;
  return simplifyClinicalDefinition(makeTermDefinition(term))
 }
 function enrichDictionaryCards(){
