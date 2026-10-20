@@ -924,7 +924,9 @@ const supplementalClinicalDefinitions={
  'eps':'Electrophysiology study: an invasive test that records electrical signals inside the heart and may use pacing to investigate arrhythmias.',
  'implantable loop recorder':'A small implanted monitor that records heart rhythm over long periods to investigate intermittent symptoms or suspected arrhythmias.',
  'ilr':'Implantable loop recorder: a small device under the skin that records heart rhythm over a long period.',
- 'cardiac resynchronization therapy':'Pacing therapy that coordinates contraction of the ventricles in selected patients with heart failure and electrical dyssynchrony.'
+ 'cardiac resynchronization therapy':'Pacing therapy that coordinates contraction of the ventricles in selected patients with heart failure and electrical dyssynchrony.',
+ 'pulsed field ablation':'A catheter-ablation technique that delivers brief electrical pulses to create lesions through irreversible electroporation, preferentially affecting myocardial cells while limiting thermal injury.',
+ 'pacemaker':'An implanted or temporary device that monitors cardiac activity and delivers electrical impulses when needed to maintain an appropriate heart rate or activation sequence.'
 };
 const supplementalPlainDefinitions={
  'left ventricular assist device':'A mechanical pump that helps a weak left ventricle push blood to the body.',
@@ -2414,17 +2416,7 @@ function makeTermAnalogy(term){
  'capture':'Think of capture as a successful knock: the pacing pulse arrives and the heart tissue responds by activating.'
  };
  if(exact[t])return exact[t];
- if(/score|risk score/.test(t))return 'Think of this as a structured checklist that combines selected factors into a score. It supports, but does not replace, clinical judgment.';
- if(/interval|segment|wave|complex|lead/.test(t))return 'Think of this as one labeled part of a longer electrical timeline. Its shape, timing, and relationship to other parts help clinicians interpret the tracing.';
- if(/mapping/.test(t))return 'Think of mapping as building an electrical map, similar to marking where signals start and which routes they follow.';
- if(/catheter/.test(t))return 'Think of a catheter as a flexible, steerable tube that gives clinicians a route to reach a target area.';
- if(/ablation|cryoablation/.test(t))return 'Think of this as targeting a small trouble spot in an electrical circuit so it is less able to sustain the abnormal rhythm.';
- if(/pacemaker|defibrillator|recorder|device|generator/.test(t))return 'Think of this device as a monitor or helper for the heart’s electrical system; the exact job depends on the device.';
- if(/block/.test(t))return 'Think of an electrical block like a message being delayed or stopped along a communication line.';
- if(/tachycardia|fibrillation|flutter|arrhythmia|dysrhythmia/.test(t))return 'Think of the heart’s electrical system as a coordinated rhythm. In this condition, the signal follows an unusual pattern; the exact pattern depends on the rhythm type.';
- if(/conduction|activation|impulse|bundle|node|purkinje|junction/.test(t))return 'Think of the heart’s electrical system as wiring that carries a signal from one area to another.';
- if(/vein|artery|atrium|ventricle|myocard|septum|valve|aorta|pulmonary/.test(t))return 'Think of this as one part of the heart’s plumbing or structure. Its location helps explain what it does and how it relates to nearby structures.';
- return 'Analogy: imagine the heart as a coordinated electrical system. This term names one part, signal, measurement, condition, or tool within that system. The comparison is only a learning aid; real physiology can be more complex.';
+ return simplifyClinicalDefinition(makeTermDefinition(term))
 }
 function enrichDictionaryCards(){
  const grid=document.getElementById('glossaryGrid');if(!grid)return;
